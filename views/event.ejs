@@ -314,6 +314,40 @@
                         <button onclick="saveChanges()">Save</button>
 
                     </div>
+
+
+                    <!-- TODO Clear area for commment experimentation  -->
+                    <% if (messages?.length > 0) { %>
+                    <div class="testimonial-area section-padding-04">
+                        <div class="container">
+                                <!-- Testimonial Content Start -->
+                                <% for (let n = 0; n < messages.length; n++) { %>
+                                    <div class="message-container" style="border: 4px solid black;">
+                                        <p  style="font-size: medium;"><%=messages[n].content %></p>
+                                        <div class="author-details">
+                                            <h5 class="name" style="font-size: small;"><%=messages[n].createdBy %></h5>
+                                            <span class="designation"  style="font-size: small;"><%=new Date(messages[n].createdAt).toLocaleString() %></span>
+                                        </div>
+                                    </div>
+                                <% } %>
+
+
+                            <!-- Testimonial Wrap End -->
+                        </div>
+                    </div>
+                    <% } else { %>
+                        <div class="testimonial-area section-padding-04">
+                            <div class="container">
+                                <p><strong> No messages for this event, be the first one to comment your thoughts below!</strong></p>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- TODO LEFT BLANK ON PURPOSE -->
+
+
+
+
                     <div>
                         <!-- TODO display messages here -->
                         <% if (messages?.length > 0) { %>
