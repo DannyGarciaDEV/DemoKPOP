@@ -1,0 +1,44 @@
+
+ 
+
+#eventContainer {
+    border: 1px solid #838282;
+    display: flex;
+    align-content: space-around;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    width:23%
+}
+
+/* Style for the spans */
+#eventContainer span {
+    display: inline-block;
+    width: 100px;
+}
+
+/* Style for the input fields */
+#eventContainer input {
+    width: 100%;
+    margin-bottom: 5px;
+    background-color: #ccc;
+}
+
+/* Style for the save button */
+button {
+    background-color: #fa6dbf;
+    color: white;
+   
+    display:flex;
+    cursor: pointer;
+    
+}
+
+div{
+    display: flex;
+   
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}

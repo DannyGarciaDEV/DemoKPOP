@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Kpop</title>
+    <!-- <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles3.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+
+</head>
+
+<body>
+    <header>
+
+  
+    </header>
+   
+   
+        <div class="bigFotos">
+            
+            <div class="fotos">
+                <div class="image-container1">
+                    <img src="img/redvelvet.gif" alt="Your Image">
+                    <div class="overlay">
+                        <a href="/createEvent">
+                            <h2 class="image-caption">Create Events</h2>
+                        </a>
+                    </div>
+                    
+                </div>
+                <div class="image-container2">
+                    <img src="img/astrodance.gif" alt="Your Image">
+                    <div class="overlay">
+                        <a href="/practice">
+                            <h2 class="image-caption">Practice</h2>
+                        </a>
+                    </div>
+                </div>
+                <div class="image-container3">
+                    <img src="img/newjeans.gif" alt="Your Image">
+                    <div class="overlay">
+                        <a href="/forum">
+                            <h2 class="image-caption">Forum</h2>
+                        </a>
+                    </div>
+                </div>
+               
+                <div class="eventLayout">
+                    <div>
+                        <h2> Calendar</h2>
+                        <iframe src="https://calendar.google.com/calendar/embed?src=a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="200" height="100" frameborder="0" scrolling="no"></iframe>
+                  
+                       </div>
+                    <h1>Events:</h1>
+                    
+                    <ul>
+                        <% for (let j = events.length - 1; j >= 0 && j >= events.length - 2; j--) { %>
+                          <li>
+                            <hr>
+                            <span>Event:</span> <a href="/event/<%= events[j]._id %>"><%= events[j].summary %></a> <br>
+                            <span>Location:</span> <%= events[j].location %> <br>
+                            <span>Date:</span> <%= new Date(events[j].start.dateTime).toLocaleDateString('en-US') %> <br>
+                            <span>Starts:</span> <%= new Date(events[j].start.dateTime).toLocaleTimeString('en-US') %> <br>
+                            <span>Ends:</span> <%= new Date(events[j].end.dateTime).toLocaleTimeString('en-US') %> <br>
+                          </li>
+                        <% } %>
+                      </ul>
+                        <button id="moreEvents"> <a href="/events">
+                        
+                            See More Events... </a>
+                        </button>
+                    </div>
+                  
+            </div>
+
+           
+        </div>
+        
+        
+    </div>
+    
+    <script src="main.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <!-- * *                               SB Forms JS                               * *-->
+    <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+    <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+</body>
+
+</html>
