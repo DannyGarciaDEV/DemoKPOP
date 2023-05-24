@@ -188,7 +188,7 @@
             <div class="offcanvas-header">
                 <!-- Offcanvas Logo Start -->
                 <div class="offcanvas-logo">
-                    <a href="index.html"><img src="assets/images/KPop.png" alt=""></a>
+                    <a href="/"><img src="/assets/images/KPop.png" alt=""></a>
                 </div>
                 <!-- Offcanvas Logo End -->
                 <button type="button" class="close-btn" data-bs-dismiss="offcanvas"><i class="flaticon-close"></i></button>
@@ -211,12 +211,16 @@
                       
                       
                         <li class="active-menu"><a href="/profile">Profile</a></li>
-                        <li class="active-menu"><a href="/logout">Logout</a></li>
+                     
                     </ul>
                     <a class="btn"  href="/createEvent">Create Event</a>
                 </div>
             </div>
             <!-- Offcanvas Body End -->
+        </div>
+
+        <div style="margin:  10% 10% 10%;">
+
         </div>
         <!-- Offcanvas End -->
 
@@ -231,7 +235,7 @@
                     <!-- Testimonial Author End -->
                     <!-- Testimonial Content Start -->
                     <div class="testimonial-content testimonial-content-active">
-                        <img src="assets/images/shape/testimonial_quote_shape.png" alt="Shape" class="testimonial-quote-shape">
+                      
                         <div class="swiper-container">
                             <div class="swiper-wrapper">
                                 <div class="swiper-slide single-testimonial-content">
@@ -241,9 +245,15 @@
                                         <!-- <button class="update-profile-btn">Update Picture</button>
                                         <button class="delete-profile-pic-btn">Delete Picture</button> -->
                                     </div>
+                                    <div>
+                                    
+                                    <iframe src="https://calendar.google.com/calendar/embed?src=a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="500" height="500" frameborder="0" scrolling="no"></iframe>
+                              
+                                   </div>
                                     <h1>Profile <%= user.local.email %>
                                     </h1>
-                                            <h1>You created this events: </h1>
+                                    <section>
+                                            <h3>Your Events: </h3>
                                            
                                             <% if (events.length > 0) { %>
                                                 <div id="events-container">
@@ -259,8 +269,24 @@
                                                       </li>
                                                     <% } %>
                                                   </ul>
+
                                                 </div>
-                                              <% } %>
+                                            <% } else { %>
+                                                    <div id="events-container"><p>You have not created any events yet, you can <a href="/createEvent">create a new event for  you community here</a>! </p></div>  
+                                            <%}%>
+                                            </section>
+                                            <section>
+                                              <h3>Events you are attending</h3>
+                                              <% if (eventsAttending?.length > 0) { %>
+                                                <div>
+                                                <% for (let n = 0; n < eventsAttending.length; n++) { %>
+                                                    <a href="/event/<%= eventsAttending[n]._id %>"><p><%= eventsAttending[n].summary %></p>
+                                                <%}%> 
+                                                </div>
+                                            <% } else { %>
+                                                <div><p>You are not attending to any events, check out <a href="/events">the events happening soon</a>! </p></div>  
+                                            <%}%>
+                                        </section>
                                     </div>
                                     </div>
                                 </div>
@@ -274,70 +300,11 @@
             </div>
         </div>
         <!-- Testimonial End -->
-</body>
 
 
-        <!-- Footer Section Start -->
-        <div class="footer-section" style="background-image: url(assets/images/bg/footer_bg1.jpg);">
-            <div class="container">
-                <div class="footer-newsletter">
-                    <div class="row">
-                        <div class="col-lg-5 col-12 text-sm-start text-center">
-                            <div class="footer-title">
-                                <span>Subscribe Newsletter</span>
-                                <h4>Subscribe to recieve
-                                    daily news</h4>
-                            </div>
-                        </div>
-                        <div class="col-lg-7 col-12">
-                            <div class="footer-newsletter-form">
-                                <form action="#">
-                                    <input type="text" placeholder="Your Email">
-                                    <button class="btn btn-primary">Subscribe</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-widget-social">
-                <div class="container">
-                    <div class="row text-center">
-                        <div class="col-12">
-                            <div class="social-title">
-                                <h4 class="title">Contact With us</h4>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <ul class="social-list">
-                                <li><a href="www.facebook.com"><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href="www.twitter.com"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="www.dribbble.com"><i class="fab fa-dribbble"></i></a></li>
-                                <li><a href="www.behance.com"><i class="fab fa-behance"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-widget-navigation text-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="footer-navigation">
-                                <ul>
-                                    <li><a href="index.html">Home</a></li>
-                                    <li><a href="about.html">About Us</a></li>
-                                    <li><a href="blog-details.html">Sponsors</a></li>
-                                    <li><a href="event-schedule.html">Schedule</a></li>
-                                    <li><a href="blog-details.html">Blog</a></li>
-                                    <li><a href="contact.html">Contact</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- TODO add a section for the events  the user is attending to -->
 
+      
             <!-- Footer Copyright Start -->
             <div class="footer-copyright-area">
                 <div class="container">
