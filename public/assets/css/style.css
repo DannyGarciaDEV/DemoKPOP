@@ -723,7 +723,7 @@ textarea {
     transition: all 0.3s linear;
     
     border-color: solid;
-    border: 4px solid black;
+    border: 1px solid black;
 }
 
 input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
@@ -8787,13 +8787,16 @@ iframe {
 
 .form-container{
   display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    flex-wrap: nowrap;
-    align-content: center;
-    justify-content: space-around;
-
+  align-items: flex-end;
+  align-content: stretch;
+  margin: 0 0 0 8%;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  background-color: pink;
+  padding: 20px;
+  border-radius: 5px;
 }
+
 
 .message{
   display: flex;
@@ -8809,4 +8812,18 @@ iframe {
 .message p {
   margin: 5px 0;
   background-color: pink;
+}
+
+button {
+  background-color: pink;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: hotpink;
 }
