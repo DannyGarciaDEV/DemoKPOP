@@ -8787,10 +8787,7 @@ iframe {
 
 .form-container{
   display: flex;
-  align-items: flex-end;
-  align-content: stretch;
-  margin: 0 0 0 8%;
-  flex-wrap: nowrap;
+  align-items: center;
   flex-direction: row;
   background-color: pink;
   padding: 20px;
