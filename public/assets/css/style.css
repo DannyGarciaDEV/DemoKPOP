@@ -8640,6 +8640,7 @@ textarea:-ms-input-placeholder {
 .eventLayout li a {
   color: #007bff;
   text-decoration: none;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 iframe {
