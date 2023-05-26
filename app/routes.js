@@ -252,8 +252,8 @@ module.exports = function (app, passport, db) {
      })
    })
 
-  app.put('/messages', (req, res) => {
-    db.collection('messages')
+  app.put('/messagesForum', (req, res) => {
+    db.collection('messagesForum')
       .findOneAndUpdate({ name: req.body.name, msg: req.body.msg }, {
         $set: {
           thumbUp: req.body.thumbUp + 1
