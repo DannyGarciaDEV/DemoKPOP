@@ -143,28 +143,6 @@
 
 
     </div>
-    <section class="container attendees-container">
-      <!-- TODO check how to integrate it with the app -->
-      <!-- <button onclick="copyWebsiteLink()">ShareLink</button> -->
-      <% if (attendees?.length> 0) { %>
-        <div>
-            <h3>
-            <%=attendees.length %> k-poppers are attending
-            </h3>
-            <% for (let n=0; n < attendees.length; n++) { %>
-            <p>
-            <%= attendees[n].user %>
-            </p>
-            <%}%>
-        </div>
-      <% } else { %>
-        <div>
-          <p>No one is attending to this event</p>
-        </div>
-    <%}%>
-        
-        <button style="display: flex;  " id="attend-button">Attend</button>
-    </section>
     <section class="container">
     <div>
         <h2>Event: <%= event.summary %></h2>
@@ -190,6 +168,29 @@
         </div>
       </div>
     
+
+      <section class="container attendees-container">
+        <!-- TODO check how to integrate it with the app -->
+        <!-- <button onclick="copyWebsiteLink()">ShareLink</button> -->
+        <% if (attendees?.length> 0) { %>
+          <div>
+              <h3>
+              <%=attendees.length %> k-poppers are attending
+              </h3>
+              <% for (let n=0; n < attendees.length; n++) { %>
+              <p>
+              <%= attendees[n].user %>
+              </p>
+              <%}%>
+          </div>
+        <% } else { %>
+          <div>
+            <p>No one is attending to this event</p>
+          </div>
+      <%}%>
+          
+          <button style="display: flex;  " id="attend-button">Attend</button>
+      </section>
       <!-- TODO Add edit functionality  -->
       <!-- <div class="btns"> -->
         <!-- <button class="btn-success" onclick="toggleEditMode()"> Edit <i class="fas fa-pencil-alt"></i></button>
