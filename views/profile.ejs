@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Exvent - Event & Conference HTML5 Template</title>
+    <title>KPop</title>
     <meta name="robots" content="noindex, follow">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -69,11 +69,11 @@
                               
                             </li>
                             <li>
-                                <a href="/events">See More Events</a>
+                                <a href="/events">Events</a>
                             </li>
-                            <li><a href="/forum">Forum</a>
+                          
                             
-                            </li>
+                        
                            
                            
 
@@ -203,11 +203,11 @@
                             
                         </li>
                         <li>
-                            <a href="/events">See More</a>
+                            <a href="/events">Events</a>
                         </li>
-                        <li><a href="/forum">Forum</a>
+                       
                             
-                        </li>
+                       
                       
                       
                         <li class="active-menu"><a href="/profile">Profile</a></li>
@@ -252,11 +252,24 @@
                                    </div>
                                     <h1>Profile <%= user.local.email %>
                                     </h1>
-                                    <section>
+                                  
+                                            <section>
+                                              <h3>Events you are attending</h3>
+                                              <% if (eventsAttending?.length > 0) { %>
+                                                <div>
+                                                <% for (let n = 0; n < eventsAttending.length; n++) { %>
+                                                <a href="/event/<%= eventsAttending[n]._id %>"><p><%= eventsAttending[n].summary %></p>  </div>
+                                                <%}%> 
+                                                </div>
+                                            <% } else { %>
+                                                <div><p>You are not attending to any events, check out <a href="/events">the events happening soon</a>! </p></div>  
+                                            <%}%>
+                                            <div id="events-container">
+                                        
                                             <h3>Your Events: </h3>
                                            
                                             <% if (events.length > 0) { %>
-                                                <div id="events-container">
+                                               
                                                   <ul>
                                                     <% for (let eventIdx = 0; eventIdx < events.length; eventIdx++) { %>
                                                       <li>
@@ -275,18 +288,6 @@
                                                     <div id="events-container"><p>You have not created any events yet, you can <a href="/createEvent">create a new event for  you community here</a>! </p></div>  
                                             <%}%>
                                             </section>
-                                            <section>
-                                              <h3>Events you are attending</h3>
-                                              <% if (eventsAttending?.length > 0) { %>
-                                                <div>
-                                                <% for (let n = 0; n < eventsAttending.length; n++) { %>
-                                                    <a href="/event/<%= eventsAttending[n]._id %>"><p><%= eventsAttending[n].summary %></p>
-                                                <%}%> 
-                                                </div>
-                                            <% } else { %>
-                                                <div><p>You are not attending to any events, check out <a href="/events">the events happening soon</a>! </p></div>  
-                                            <%}%>
-                                        </section>
                                     </div>
                                     </div>
                                 </div>
