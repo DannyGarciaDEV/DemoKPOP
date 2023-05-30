@@ -69,12 +69,11 @@
                             
                             </li>
                             <li>
-                                <a href="/events">See More Events</a>
+                                <a href="/events">Events</a>
                             </li>
-                            <li><a href="/forum">Forum</a>
-                              
-                            </li>
-                            <li><a href="/createEvent">CreateEvent</a>
+                           
+                          
+                            <li><a href="/createEvent">Create Event</a>
                               
                             </li>
                             
@@ -201,11 +200,11 @@
                            
                         </li>
                         <li>
-                            <a href="/events">See More Events</a>
+                            <a href="/events">Events</a>
                         </li>
-                        <li><a href="/forum">Forum</a>
+                        
                       
-                        </li>
+                      
                         <li><a href="createEvent">Create Event</a>
                            
                         </li>
@@ -270,7 +269,7 @@
             <ul>
                 <% for (let j = events.length - 1; j >= 0 && j >= events.length - 2; j--) { %>
                   <li>
-                    <hr>
+                   
                     <span>Event:</span> <a href="/event/<%= events[j]._id %>"><%= events[j].summary %></a> <br>
                     <span>Location:</span> <%= events[j].location %> <br>
                     <span>Date:</span> <%= new Date(events[j].start.dateTime).toLocaleDateString('en-US') %> <br>
