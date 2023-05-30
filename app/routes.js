@@ -19,11 +19,14 @@ module.exports = function (app, passport, db) {
 
   // PROFILE SECTION =========================
   app.get('/profile', isLoggedIn, async function (req, res) {
+    // Get events created by the user
     const dbEvents = db.collection('events').find({ createdBy: req.user._id } ).toArray();
-      // TODO get the events that the user is attending to
+     // Get the event IDs that the user is attending
     const eventIdsUserIsAttending = (await db.collection('event_attendees').find({userId: req.user._id}).toArray()).map(e => e.eventId);
+     // Get events that the user is attending
     const eventsAttending = await db.collection('events').find({_id: { "$in": eventIdsUserIsAttending }}).toArray();
-      // Events created by the user
+     
+  // Render the profile template and pass the events, user information, and events attending
       res.render('profile.ejs', { events: dbEvents, user: req.user, userId: req.user._id, eventsAttending});
   });
 
@@ -71,20 +74,13 @@ module.exports = function (app, passport, db) {
 
 
 
-  app.get('/moreEvents', isLoggedIn, function (req, res) {
-    db.collection('messages').find().toArray((err, result) => {
-      if (err) return console.log(err)
-      res.render('moreEvents.ejs', {
-        user: req.user,
-        messages: result
-      })
-    })
-  });
+  
 
 
   app.get('/event/:eventId', function (req, res) {
     if (ObjectId.isValid(req.params.eventId)) {
       const eventId = ObjectId(req.params.eventId);
+     // If there is an error during the database operation, the code inside the  block is skipped, and the execution continues after this code snippet.
       db.collection('events').findOne({ _id: eventId }, (err, event) => {
         if (err) {
           console.log(err);
