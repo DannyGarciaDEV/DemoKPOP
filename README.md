@@ -13,5 +13,6 @@
 Modified from Scotch.io's auth tutorial
 # DemoKPOP
 
-<iframe src="./assets/img/giphy.gif" width="480" height="258" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-
+![Index Page](./img/kpopdemo.png)
+![Events Page](./img/events.png)
+![Event Page](./img/eventpage.png)
