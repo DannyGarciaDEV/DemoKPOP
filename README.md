@@ -13,5 +13,5 @@
 Modified from Scotch.io's auth tutorial
 # DemoKPOP
 
-<iframe src="https://giphy.com/embed/zdVPI5We7F17siJTYw" width="480" height="258" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+<iframe src="./assets/img/giphy.gif" width="480" height="258" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
 
