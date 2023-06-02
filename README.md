@@ -13,6 +13,6 @@
 Modified from Scotch.io's auth tutorial
 # DemoKPOP
 
-![Index Page](./img/kpopdemo.png)
-![Events Page](./img/events.png)
-![Event Page](./img/eventpage.png)
+![Index Page](public/img/kpopdemo.png)
+![Events Page](public/img/events.png)
+![Event Page](public/img/eventpage.png)
