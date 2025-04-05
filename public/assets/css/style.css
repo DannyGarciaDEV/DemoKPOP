@@ -6891,7 +6891,7 @@ textarea:-ms-input-placeholder {
   right: auto;
   top: 50%;
   transform: translateY(-50%);
-  color: #ffae4a;
+  color: #fc097c;
 }
 
 .event-list-page-wrap .event-list-top-bar .event-list-search .single-form.form-border::before {
@@ -8610,38 +8610,105 @@ textarea:-ms-input-placeholder {
 .makeEvent {
   text-align: center;
 }
-
-.eventLayout {
-  margin-top: 20px;
-}
-
-.eventLayout h1 {
-  font-size: 24px;
-}
-
-.eventLayout ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 10px;
-}
-
 .eventLayout li {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;  /* Ensures content is stacked vertically */
+  justify-content: space-between;  /* Distributes space between elements */
+  margin-bottom: 24px;
+  padding: 20px 25px;
+  background-color: #ffffff;
+  border-left: 6px solid #fc097c;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  line-height: 1.6;
+  font-size: 1rem;
+  height: 200px;  /* Keeps the fixed height for consistency */
 }
 
-.eventLayout li span {
+.event-name {
+  color: #fc097c;
   font-weight: bold;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+}
+
+.event-name:hover {
+  color: #d50068;
+  text-decoration: underline;
+}
+.eventLayout li:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+.no-events p {
+  font-size: 1rem;
+  color: #444;
+  background-color: #fff5fa;
+  padding: 16px 20px;
+  border-left: 4px solid #fc097c;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
+.no-events a {
+  color: #fc097c;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.no-events a:hover {
+  color: #d50068;
+  text-decoration: underline;
 }
 
 .eventLayout li a {
-  color: #007bff;
+  color: #fc097c;
   text-decoration: none;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+ 
+  border-bottom: 2px solid #fc097c;
+  padding-bottom: 3px;
+  transition: color 0.3s ease;
 }
+
+.eventLayout li a:hover {
+  color: #d50068; /* Slightly darker pink when hovered */
+}
+
+.eventLayout li span {
+ 
+  font-weight: 700;
+  color: #333;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+
+  text-transform: uppercase; /* Adds a clean, modern touch */
+}
+
+.eventLayout li span:first-of-type {
+  margin-top: 0;
+  text-transform: none; /* Keeps the first span (Event:) normal */
+}
+
+.eventLayout li .eventDetails {
+    /* font-weight: normal; */
+    /* color: #555; */
+    /* font-size: 1rem; */
+    margin-top: 4px;
+    flex-grow: 1;
+   
+
+    /* flex-direction: column; */
+    justify-content: space-between;
+}
+
 
 iframe {
   display: flex;
@@ -8669,22 +8736,6 @@ input[type="datetime-local"] {
   border: 1px solid #ccc;
   width: 300px;
 }
-
-button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  background-color: #9b4caf;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-button:hover {
-  background-color: #cc8cd0;
-}
-
 
 
 

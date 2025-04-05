@@ -6,36 +6,28 @@ body{
     text-align: center;
 }
 
-.eventLayout {
-    margin-top: 20px;
-}
-
-.eventLayout h1 {
-    font-size: 24px;
-}
-
-.eventLayout ul {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 10px;
-}
-
 .eventLayout li {
     margin-bottom: 20px;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.eventLayout li span {
-    font-weight: bold;
-}
-
-.eventLayout li a {
-    color: #007bff;
+    padding: 15px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .eventLayout li:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  .eventLayout li a {
+    color: #fc097c;
     text-decoration: none;
-}
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.4px;
+  }
+  
 
 iframe {
     display: flex;

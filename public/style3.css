@@ -1,84 +1,166 @@
+body {
+  background-color: #f4f7fc;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  
-  .col-sm-6 {
-    background-color: #f1f1f1;
-    padding: 30px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .alert {
-    margin-bottom: 20px;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  
-  .alert-danger {
-    background-color: #edd7f8;
-    border: 1px solid #fb8792;
-    color: #721c24;
-  }
-  
-  .form-group {
-    margin-bottom: 20px;
-  }
-  
-  label {
-    font-weight: 500;
-    color: #333;
-  }
-  
-  input[type="text"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button[type="submit"] {
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #ff9de8;
-    color: #fcefef;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #f0a2e7;
-  }
-  
-  p {
-    margin-bottom: 10px;
-  }
-  
-  a {
-    text-decoration: none;
-    color: #e9a0ed;
-  }
-  
-  a:hover {
-    text-decoration: underline;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.inside {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.inside h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #fc097c;
+}
+
+.inside form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.inside .form-group {
+  text-align: left;
+}
+
+.inside label {
+  font-weight: bold;
+  color: #444;
+}
+
+.inside input[type="text"],
+.inside input[type="password"] {
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inside button {
+  background-color: #fc097c;
+  color: white;
+  padding: 14px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.inside button:hover {
+  background-color: #d50068;
+}
+
+.inside .alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+.inside p {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 15px;
+}
+
+.inside p a {
+  color: #fc097c;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.inside p a:hover {
+  color: #d50068;
+}
+
+hr {
+  margin: 20px 0;
+  border-top: 1px solid #eee;
+  width: 100%;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .inside {
+    padding: 20px;
+    max-width: 90%; /* Adjust the width for smaller screens */
   }
 
-
-  #chatContainer {
-    height: 300px; /* Adjust the height as per your requirement */
-    overflow-y: auto; /* Enable vertical scrolling */
-    border: 1px solid #b6b3b3; /* Optional: Add a border to the container */
+  .inside h1 {
+    font-size: 1.6rem;
   }
+
+  .inside input[type="text"],
+  .inside input[type="password"],
+  .inside button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .inside button {
+    padding: 12px;
+  }
+
+  .inside p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .inside {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .inside h1 {
+    font-size: 1.4rem;
+  }
+
+  .inside input[type="text"],
+  .inside input[type="password"],
+  .inside button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+
+  .inside button {
+    padding: 10px;
+  }
+
+  .inside p {
+    font-size: 0.8rem;
+  }
+}
