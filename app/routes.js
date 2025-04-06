@@ -1,34 +1,41 @@
 const { createEvent } = require('../config/googleCloud.js');
 const ObjectId = require('mongodb').ObjectID;
-const getVideoId = require('get-video-id')
-
-
-
+const getVideoId = require('get-video-id');
 
 module.exports = function (app, passport, db) {
 
-  // normal routes ===============================================================
+  // Normal Routes ===============================================================
 
-  // show the home page (will also have our login links)
-  app.get('/', function (req, res) {
+  app.get('/', (req, res) => {
     db.collection('events').find().toArray((err, result) => {
-      if (err) return console.log(err);
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error fetching events');
+      }
       res.render('index.ejs', { events: result, user: req.user });
     });
   });
 
-  // PROFILE SECTION =========================
-  app.get('/profile', isLoggedIn, async function (req, res) {
-    // Get events created by the user
-    const dbEvents = db.collection('events').find({ createdBy: req.user._id } ).toArray();
-     // Get the event IDs that the user is attending
-    const eventIdsUserIsAttending = (await db.collection('event_attendees').find({userId: req.user._id}).toArray()).map(e => e.eventId);
-     // Get events that the user is attending
-    const eventsAttending = await db.collection('events').find({_id: { "$in": eventIdsUserIsAttending }}).toArray();
-     
-  // Render the profile template and pass the events, user information, and events attending
-      res.render('profile.ejs', { events: dbEvents, user: req.user, userId: req.user._id, eventsAttending});
+  // PROFILE SECTION ===========================================================
+  app.get('/profile', isLoggedIn, async (req, res) => {
+    try {
+      const dbEvents = await db.collection('events').find({ createdBy: req.user._id }).toArray();
+      const attendingDocs = await db.collection('event_attendees').find({ userId: req.user._id }).toArray();
+      const eventIdsUserIsAttending = attendingDocs.map(e => e.eventId);
+      const eventsAttending = await db.collection('events').find({ _id: { $in: eventIdsUserIsAttending } }).toArray();
+      
+      res.render('profile.ejs', {
+        events: dbEvents,
+        user: req.user,
+        userId: req.user._id,
+        eventsAttending: eventsAttending
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+    }
   });
+
 
 
   app.get('/practice', isLoggedIn, function (req, res) {
@@ -263,98 +270,110 @@ module.exports = function (app, passport, db) {
       })
   })
 
-  app.delete('/messages', (req, res) => {
-    db.collection('messages').findOneAndDelete({ name: req.body.name, msg: req.body.msg }, (err, result) => {
-      if (err) return res.send(500, err)
-      res.send('Message deleted!')
-    })
-  })
 
+
+
+  app.delete('/event/:eventId/message/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params;
+  
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).send('Invalid message ID');
+    }
+  
+    try {
+      const result = await db.collection('messages').deleteOne({
+        _id: new ObjectId(id),
+        createdBy: req.user.local.email, // Only the message author can delete
+      });
+  
+      if (result.deletedCount === 0) {
+        return res.status(404).send('Message not found or unauthorized');
+      }
+  
+      res.status(200).send('Deleted successfully');
+    } catch (err) {
+      console.error('Error deleting message:', err);
+      res.status(500).send('Server error');
+    }
+  });
 
   // counter routes how many people are showing 
 
 
+  // Counter Routes ============================================================
   app.post('/counter', (req, res) => {
-    db.collection('counter').save({ events: result, user: req.user, counter: 0 }, (err, result) => {
-      if (err) return console.log(err)
-      console.log('saved to database')
-      res.redirect('/events')
-    })
-  })
-
+    db.collection('counter').save({ events: req.body.events, user: req.user, counter: 0 }, (err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error saving counter');
+      }
+      console.log('saved to database');
+      res.redirect('/events');
+    });
+  });
 
   app.put('/counter', (req, res) => {
-    const objectId = req.body.objectId;
-    db.collection('counter')
-      .findOneAndUpdate(
-        { _id: objectId, user: req.body.user },
-        { $inc: { counter: 1 } },
-        { sort: { _id: -1 }, upsert: true }
-      )
-      .then(result => {
+    const { objectId, user } = req.body;
+
+    db.collection('counter').findOneAndUpdate(
+      { _id: objectId, user },
+      { $inc: { counter: 1 } },
+      { sort: { _id: -1 }, upsert: true },
+      (err, result) => {
+        if (err) {
+          console.error('Error updating counter:', err);
+          return res.status(500).send('An error occurred');
+        }
         res.send(result);
-      })
-      .catch(err => {
-        console.error('Error updating counter:', err);
-        res.status(500).send('An error occurred');
-      });
+      }
+    );
+  });
+
+  // LOGOUT ====================================================================
+  app.get('/logout', (req, res) => {
+    req.logout(() => {
+      console.log('User has logged out!');
+    });
+    res.redirect('/');
   });
 
   // =============================================================================
-  // AUTHENTICATE (FIRST LOGIN) ==================================================
-  // =============================================================================
-
-  // locally --------------------------------
-  // LOGIN ===============================
-  // show the login form
-  app.get('/login', function (req, res) {
+  // AUTHENTICATE (LOGIN & SIGNUP) =================================================
+  app.get('/login', (req, res) => {
     res.render('login.ejs', { message: req.flash('loginMessage') });
   });
 
-  // process the login form
   app.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/profile', // redirect to the secure profile section
-    failureRedirect: '/login', // redirect back to the signup page if there is an error
-    failureFlash: true // allow flash messages
+    successRedirect: '/profile',
+    failureRedirect: '/login',
+    failureFlash: true
   }));
 
-  // SIGNUP =================================
-  // show the signup form
-  app.get('/signup', function (req, res) {
+  app.get('/signup', (req, res) => {
     res.render('signup.ejs', { message: req.flash('signupMessage') });
   });
 
-  // process the signup form
   app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/profile', // redirect to the secure profile section
-    failureRedirect: '/signup', // redirect back to the signup page if there is an error
-    failureFlash: true // allow flash messages
+    successRedirect: '/profile',
+    failureRedirect: '/signup',
+    failureFlash: true
   }));
 
   // =============================================================================
-  // UNLINK ACCOUNTS =============================================================
-  // =============================================================================
-  // used to unlink accounts. for social accounts, just remove the token
-  // for local account, remove email and password
-  // user account will stay active in case they want to reconnect in the future
-
-  // local -----------------------------------
-  app.get('/unlink/local', isLoggedIn, function (req, res) {
+  // UNLINK ACCOUNTS ============================================================
+  app.get('/unlink/local', isLoggedIn, (req, res) => {
     var user = req.user;
     user.local.email = undefined;
     user.local.password = undefined;
-    user.save(function (err) {
+    user.save((err) => {
       res.redirect('/');
     });
   });
 
 };
 
-// route middleware to ensure user is logged in
+// Route Middleware to Ensure User is Logged In ================================
 function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated())
-    return next();
-
+  if (req.isAuthenticated()) return next();
   res.redirect('/');
 }
-

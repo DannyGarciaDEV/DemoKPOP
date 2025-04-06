@@ -248,32 +248,42 @@
         <!-- Contact Page Start -->
       
                 <!-- Contact Form Start -->
-                <div>
-                    <iframe src="https://calendar.google.com/calendar/embed?src=a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="500" height="400" frameborder="0" scrolling="no"></iframe>
-                <div class="makeEvent">
-
+           
                  
-                    <h2> <a href="https://docs.google.com/document/d/1UTPLB0h9mC4WL-KP8Cn3ZMIcU8QJn8tiLH2P6PmgyJk/edit?usp=sharing"> Documentation </a></h2>
-                <div>
+     
+                <div class="form-events">
                     <form action="/event" method="POST">
+                      <h2>Create a New Event</h2>
+                  
+                      <div class="form-group">
                         <label for="eventName">Event Summary:</label>
                         <input type="text" id="eventName" name="summary" required>
-                      
-                        <label for="eventDate">Start Date:</label>
+                      </div>
+                  
+                      <div class="form-group">
+                        <label for="startDate">Start Date:</label>
                         <input type="datetime-local" id="startDate" name="startDate" required>
-                
-                        <label for="eventDate">End Date:</label>
+                      </div>
+                  
+                      <div class="form-group">
+                        <label for="endDate">End Date:</label>
                         <input type="datetime-local" id="endDate" name="endDate" required>
-                      
+                      </div>
+                  
+                      <div class="form-group">
                         <label for="location">Event Location:</label>
                         <input type="text" id="location" name="location" required>
-                
-                      <label for="video">Youtube Live Video For Your Event</label>
-                      <input type="text" id="videoUrl" name="videoUrl" >  
-                        <button type="submit">Submit</button>
-                      </form>
-                        
-                   </div>  
+                      </div>
+                  
+                      <div class="form-group">
+                        <label for="videoUrl">YouTube Live Video (optional):</label>
+                        <input type="text" id="videoUrl" name="videoUrl" placeholder="https://youtube.com/your-stream-link">
+                      </div>
+                  
+                      <button class="btn" type="submit">Submit</button>
+                    </form>
+                  </div>
+                      
                    
                   </div>
                    </div>
