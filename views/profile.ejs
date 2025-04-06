@@ -235,71 +235,75 @@
                     <!-- Testimonial Author End -->
                     <!-- Testimonial Content Start -->
                     <div class="testimonial-content testimonial-content-active">
-                      
                         <div class="swiper-container">
-                            <div class="swiper-wrapper">
-                                <div class="swiper-slide single-testimonial-content">
-                                    <div class="page-header text-center">
-                                       
-                                       
-                                        <!-- <button class="update-profile-btn">Update Picture</button>
-                                        <button class="delete-profile-pic-btn">Delete Picture</button> -->
-                                    </div>
-                                    <div>
-                                    
-                                    <iframe src="https://calendar.google.com/calendar/embed?src=a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209%40group.calendar.google.com&ctz=America%2FNew_York" style="border: 0" width="500" height="500" frameborder="0" scrolling="no"></iframe>
-                              
-                                   </div>
-                                    <h1>Profile <%= user.local.email %>
-                                    </h1>
-                                  
-                                            <section>
-                                              <h3>Events you are attending</h3>
-                                              <% if (eventsAttending?.length > 0) { %>
-                                                <div>
-                                                <% for (let n = 0; n < eventsAttending.length; n++) { %>
-                                                <a href="/event/<%= eventsAttending[n]._id %>"><p><%= eventsAttending[n].summary %></p>  </div>
-                                                <%}%> 
-                                                </div>
-                                            <% } else { %>
-                                                <div><p>You are not attending to any events, check out <a href="/events">the events happening soon</a>! </p></div>  
-                                            <%}%>
-                                            <div id="events-container">
-                                        
-                                            <h3>Your Events: </h3>
-                                           
-                                            <% if (events.length > 0) { %>
-                                               
-                                                  <ul>
-                                                    <% for (let eventIdx = 0; eventIdx < events.length; eventIdx++) { %>
-                                                      <li>
-                                                        <hr>
-                                                        <span>Event:</span> <a href="/event/<%= events[eventIdx]._id %>"><%= events[eventIdx].summary %></a> <br>
-                                                        <span>Location:</span> <%= events[eventIdx].location %> <br>
-                                                        <span>Date:</span> <%= new Date(events[eventIdx].start.dateTime).toLocaleDateString('en-US') %> <br>
-                                                        <span>Starts:</span> <%= new Date(events[eventIdx].start.dateTime).toLocaleTimeString('en-US') %> <br>
-                                                        <span>Ends:</span> <%= new Date(events[eventIdx].end.dateTime).toLocaleTimeString('en-US') %> <br>
-                                                      </li>
-                                                    <% } %>
-                                                  </ul>
-
-                                                </div>
-                                            <% } else { %>
-                                                    <div id="events-container"><p>You have not created any events yet, you can <a href="/createEvent">create a new event for  you community here</a>! </p></div>  
-                                            <%}%>
-                                            </section>
-                                    </div>
-                                    </div>
+                          <div class="swiper-wrapper">
+                            <div class="swiper-slide single-testimonial-content">
+                              <div class="page-header text-center">
+                                <!-- Profile Picture buttons can be placed here -->
+                              </div>
+                      
+                              <div>
+                                <iframe 
+                                  src="https://calendar.google.com/calendar/embed?src=a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209%40group.calendar.google.com&ctz=America%2FNew_York"
+                                  style="border: 0"
+                                  width="500"
+                                  height="500"
+                                  frameborder="0"
+                                  scrolling="no">
+                                </iframe>
+                              </div>
+                      
+                              <h1>Profile: <%= user.local.email %></h1>
+                      
+                              <section>
+                                <h3>Events You Are Attending</h3>
+                                <% if (eventsAttending?.length > 0) { %>
+                                  <div>
+                                    <% for (let n = 0; n < eventsAttending.length; n++) { %>
+                                      <a class="event-name"href="/event/<%= eventsAttending[n]._id %>">
+                                        <li><%= eventsAttending[n].summary %></li>
+                                      </a>
+                                      <br>
+                                    <% } %>
+                                  </div>
+                                <% } else { %>
+                                    <div class="no-events">
+                                        <p>
+                                          You are not attending any events yet. Check out 
+                                          <a href="/events">the events happening soon</a>!
+                                        </p>
+                                      </div>
+                                <% } %>
+                      
+                                <div id="events-container">
+                                  <h3>Your Events</h3>
+                      
+                                  <% if (events.length > 0) { %>
+                                    <ul>
+                                      <% for (let eventIdx = 0; eventIdx < events.length; eventIdx++) { %>
+                                        <li>
+                                          <hr>
+                                          <span>Event:</span> 
+                                          <a href="/event/<%= events[eventIdx]._id %>"><%= events[eventIdx].summary %></a><br>
+                      
+                                          <span>Location:</span> <%= events[eventIdx].location %> <br>
+                                          <span>Date:</span> <%= new Date(events[eventIdx].start.dateTime).toLocaleDateString('en-US') %> <br>
+                                          <span>Starts:</span> <%= new Date(events[eventIdx].start.dateTime).toLocaleTimeString('en-US') %> <br>
+                                          <span>Ends:</span> <%= new Date(events[eventIdx].end.dateTime).toLocaleTimeString('en-US') %> <br>
+                                        </li>
+                                      <% } %>
+                                    </ul>
+                                  <% } else { %>
+                                    <p>You have not created any events yet. You can <a href="/createEvent">create a new event for your community here</a>!</p>
+                                  <% } %>
                                 </div>
+                              </section>
                             </div>
-                            <div class="swiper-pagination"></div>
+                          </div>
                         </div>
-                    </div>
-                    <!-- Testimonial Content End -->
-                </div>
-                <!-- Testimonial Wrap End -->
-            </div>
-        </div>
+                      
+                        
+                      </div>
         <!-- Testimonial End -->
 
 
