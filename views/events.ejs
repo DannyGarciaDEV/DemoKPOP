@@ -326,14 +326,15 @@
               <!-- Event List Content Start -->
            
                          
-              <div class="event-list-content">
+              <div class="eventLayout">
                 <% for (let j = events.length - 1; j >= 0; j--) { %>
+                 
                   <hr>
                 <h3> <a class="title" href="/event/<%= events[j]._id %>">
                     <%= events[j].summary %>
                   </a></h3> 
                   
-                    <div class="meta-data">
+                    <div class="eventDetails">
                       <span>
                         <i class="far fa-clock"></i>
                         <%= new Date(events[j].start.dateTime).toLocaleTimeString('en-US') %> - <%= new Date(events[j].end.dateTime).toLocaleTimeString('en-US') %>
@@ -342,15 +343,14 @@
                       <span>
                         <i class="fas fa-map-marker-alt"></i>
                         <%= events[j].location %>
+                         <div>  <img style="height:100px; weight: 100px;" src="https://maps.googleapis.com/maps/api/staticmap?center=<%= events[j].location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= events[j].location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94"></div>
                       </span>
                     </div>
-                    <div class="event-desc">
-                      <!-- Add event description here -->
-                    </div>
+                 
                     <% if (new Date(events[j].end.dateTime) < new Date()) { %>
                       <p style="color:red">This event has already passed.</p>
                     <% } %>
-                    <a class="ticket-link" href="/createEvent">Create More Events</a>
+                   <button id="moreEvents" class="btn"><a href="/createEvent">Create More Events</a> </button>
                  
                   <div>
                   
