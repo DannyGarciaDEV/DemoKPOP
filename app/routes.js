@@ -79,14 +79,43 @@ module.exports = function (app, passport, db) {
   });
 
 
-
-
+  app.put('/event/:eventId/messages/:messageId', isLoggedIn, async (req, res) => {
+    const { eventId, messageId } = req.params;
+    const { text } = req.body;
+    const currentUser = req.user?.local?.email;
   
+    if (!ObjectId.isValid(eventId) || !ObjectId.isValid(messageId)) {
+      return res.status(400).send('Invalid ID');
+    }
+  
+    try {
+      const message = await db.collection('messages').findOne({ _id: new ObjectId(messageId) });
+  
+      if (!message) {
+        return res.status(404).send('Message not found');
+      }
+  
+      if (message.createdBy !== currentUser) {
+        return res.status(403).send('Not authorized to edit this message');
+      }
+  
+      await db.collection('messages').updateOne(
+        { _id: new ObjectId(messageId) },
+        { $set: { content: text, editedAt: new Date() } }
+      );
+  
+      res.status(200).send('Message updated');
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal server error');
+    }
+  });
 
 
   app.get('/event/:eventId', function (req, res) {
     if (ObjectId.isValid(req.params.eventId)) {
       const eventId = ObjectId(req.params.eventId);
+      
      // If there is an error during the database operation, the code inside the  block is skipped, and the execution continues after this code snippet.
       db.collection('events').findOne({ _id: eventId }, (err, event) => {
         if (err) {
@@ -123,6 +152,39 @@ module.exports = function (app, passport, db) {
       res.status(400).send(`Event ${req.params.eventId} not found`);
     }
   })
+
+  app.delete('/event/:eventId/', isLoggedIn, async (req, res) => {
+    const eventId = req.params.eventId;
+    const currentUser = req.user?.local?.email || req.user?.email;
+  
+    if (!ObjectId.isValid(eventId)) {
+      return res.status(400).send('Invalid event ID');
+    }
+  
+    try {
+      const event = await db.collection('events').findOne({ _id: new ObjectId(eventId) });
+  
+      if (!event) {
+        return res.status(404).send('Event not found');
+      }
+  
+      // Debugging logs
+      console.log('Event createdBy:', event.createdBy);
+  
+  
+ 
+      // Delete the event and related collections
+      await db.collection('events').deleteOne({ _id: new ObjectId(eventId) });
+      await db.collection('messages').deleteMany({ eventId: new ObjectId(eventId) });
+      await db.collection('event_attendees').deleteMany({ eventId: new ObjectId(eventId) });
+  
+      res.status(200).send('Event deleted');
+    } catch (err) {
+      console.error('Delete error:', err);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+ 
 
   // POST to attend an event
   app.post('/event/:eventId/attend', isLoggedIn, (req, res) => {
