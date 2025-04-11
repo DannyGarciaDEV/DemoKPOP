@@ -1,23 +1,19 @@
 const fs = require('fs').promises;
 const path = require('path');
 const process = require('process');
-const {authenticate} = require('@google-cloud/local-auth');
-const {google} = require('googleapis');
+const { authenticate } = require('@google-cloud/local-auth');
+const { google } = require('googleapis');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar'];
-let mexicoCityId = 'a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209@group.calendar.google.com'
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
+const mexicoCityId = 'a8d7830223ad236476ff40f48f729f6487dff251ed6190515d47b4d08608f209@group.calendar.google.com';
+
+// Token and credentials file paths
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
 
-
 /**
- * Reads previously authorized credentials from the save file.
- *
- * @return {Promise<OAuth2Client|null>}
+ * Load previously authorized credentials from file.
  */
 async function loadSavedCredentialsIfExist() {
   try {
@@ -30,10 +26,7 @@ async function loadSavedCredentialsIfExist() {
 }
 
 /**
- * Serializes credentials to a file compatible with GoogleAUth.fromJSON.
- *
- * @param {OAuth2Client} client
- * @return {Promise<void>}
+ * Save OAuth2 client credentials to file.
  */
 async function saveCredentials(client) {
   const content = await fs.readFile(CREDENTIALS_PATH);
@@ -49,34 +42,34 @@ async function saveCredentials(client) {
 }
 
 /**
- * Load or request or authorization to call APIs.
- *
+ * Authorize and return OAuth2 client.
  */
 async function authorize() {
   let client = await loadSavedCredentialsIfExist();
   if (client) {
     return client;
   }
+
+  const oauthPort = process.env.OAUTH_PORT || 3001; // avoid port conflict here!
+
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
+    port: oauthPort, 
   });
+
   if (client.credentials) {
     await saveCredentials(client);
   }
   return client;
 }
 
-
 /**
- * 
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ * List upcoming calendar events.
  */
-
-
-
 async function listEvents() {
-  const calendar = google.calendar({version: 'v3', auth});
+  const auth = await authorize();
+  const calendar = google.calendar({ version: 'v3', auth });
   const res = await calendar.events.list({
     calendarId: 'primary',
     timeMin: new Date().toISOString(),
@@ -84,66 +77,37 @@ async function listEvents() {
     singleEvents: true,
     orderBy: 'startTime',
   });
-  
+
   const events = res.data.items;
   if (!events || events.length === 0) {
     console.log('No upcoming events found.');
     return;
   }
+
   console.log('Upcoming 10 events:');
-  events.map((event, i) => {
+  events.forEach((event) => {
     const start = event.start.dateTime || event.start.date;
     console.log(`${start} - ${event.summary}`);
   });
 }
+
+/**
+ * Create an event in the Mexico City calendar.
+ * @param {object} event - Event object following Google Calendar API format
+ * @returns {object} Created event result
+ */
 async function createEvent(event) {
-    const auth = await authorize();
-    const calendar = google.calendar({version: 'v3', auth });   
-    // const event = {
-    //     'summary': 'Google I/O 2015',
-    //     'location': '800 Howard St., San Francisco, CA 94103',
-    //     'description': 'A chance to hear more about Google\'s developer products.',
-    //     'start': {
-    //       'dateTime': '2023-05-28T09:00:00-07:00',
-    //       'timeZone': 'America/Los_Angeles',
-    //     },
-    //     'end': {
-    //       'dateTime': '2023-05-28T12:00:00-07:00',
-    //       'timeZone': 'America/Los_Angeles',
-    //     },
-    //     'recurrence': [
-    //       'RRULE:FREQ=DAILY;COUNT=2'
-    //     ],
-    //     'attendees': [
-    //       {'email': 'lpage@example.com'},
-    //       {'email': 'sbrin@example.com'},
-    //     ],
-    //     'reminders': {
-    //       'useDefault': false,
-    //       'overrides': [
-    //         {'method': 'email', 'minutes': 24 * 60},
-    //         {'method': 'popup', 'minutes': 10},
-    //       ],
-    //     },
-    //   };
+  const auth = await authorize();
+  const calendar = google.calendar({ version: 'v3', auth });
 
-      const gCalendarEvent = await calendar.events.insert({
-        auth: auth,
-        calendarId: mexicoCityId,
-        resource: event,
-      });
-      
-      console.log('Event created: %s', gCalendarEvent.htmlLink);
-      return gCalendarEvent;
-    }      
+  const gCalendarEvent = await calendar.events.insert({
+    auth: auth,
+    calendarId: mexicoCityId,
+    resource: event,
+  });
 
-    // authorize().then(listEvents).catch(console.error);
+  console.log('Event created: %s', gCalendarEvent.data.htmlLink);
+  return gCalendarEvent.data;
+}
 
-// function initializeGoogleCloud() {
-//   return authorize().then((auth) => {
-//     return auth;
-//   }).catch(console.error);
-// }
-
-
-module.exports = { createEvent };
+module.exports = { createEvent, listEvents };

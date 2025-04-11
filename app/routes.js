@@ -113,45 +113,55 @@ module.exports = function (app, passport, db) {
 
 
   app.get('/event/:eventId', function (req, res) {
-    if (ObjectId.isValid(req.params.eventId)) {
-      const eventId = ObjectId(req.params.eventId);
-      
-     // If there is an error during the database operation, the code inside the  block is skipped, and the execution continues after this code snippet.
-      db.collection('events').findOne({ _id: eventId }, (err, event) => {
+    if (!ObjectId.isValid(req.params.eventId)) {
+      return res.status(400).send(`Event ${req.params.eventId} not found`);
+    }
+  
+    const eventId = ObjectId(req.params.eventId);
+  
+    // Find the event
+    db.collection('events').findOne({ _id: eventId }, (err, event) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      if (!event) {
+        return res.status(404).send(`Event ${req.params.eventId} not found`);
+      }
+  
+      // Find messages for the event
+      db.collection('messages').find({ eventId: eventId }).toArray((err, messages) => {
         if (err) {
           console.log(err);
-          res.status(500).send('Internal Server Error');
-          return;
+          return res.status(500).send('Internal Server Error');
         }
-        if (!event) {
-          res.status(404).send(`Event ${req.params.eventId} not found`);
-        }
-        db.collection('messages').find({ eventId: eventId }).toArray((err, messages) => {
+  
+        // Find attendees for the event
+        db.collection('event_attendees').find({ eventId: eventId }).toArray((err, attendees) => {
           if (err) {
             console.log(err);
-            res.status(500).send('Internal Server Error');
-            return;
+            return res.status(500).send('Internal Server Error');
           }
-          // TODO Get the attendees from the database
-          db.collection('event_attendees').find({ eventId: eventId }).toArray((err, attendees) => {
-            if (err) {
-              console.log(err);
-              res.status(500).send('Internal Server Error');
-              return;
-            }
-            res.render('event.ejs', {
-              event: event,
-              messages: messages || [],
-              attendees: attendees || [],
-              user: req.user?.local?.email
-            });
+  
+          // Check if the logged-in user is attending
+          let isAttending = false;
+          if (req.user) {
+            isAttending = attendees.some(att => att.userId.toString() === req.user._id.toString());
+          }
+  
+          // Render the event page
+          res.render('event.ejs', {
+            event: event,
+            messages: messages || [],
+            attendees: attendees || [],
+            user: req.user?.local?.email,
+            isAttending: isAttending
           });
         });
       });
-    } else {
-      res.status(400).send(`Event ${req.params.eventId} not found`);
-    }
-  })
+    });
+  });
 
   app.delete('/event/:eventId/', isLoggedIn, async (req, res) => {
     const eventId = req.params.eventId;
@@ -358,38 +368,135 @@ module.exports = function (app, passport, db) {
       res.status(500).send('Server error');
     }
   });
+// Count attendees for a specific event
+app.get('/event/:eventId/count', isLoggedIn, async (req, res) => {
+  const eventId = req.params.eventId;
 
-  // counter routes how many people are showing 
+  if (!ObjectId.isValid(eventId)) {
+    return res.status(400).send('Invalid event ID');
+  }
 
-
-  // Counter Routes ============================================================
-  app.post('/counter', (req, res) => {
-    db.collection('counter').save({ events: req.body.events, user: req.user, counter: 0 }, (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Error saving counter');
-      }
-      console.log('saved to database');
-      res.redirect('/events');
+  try {
+    const count = await db.collection('event_attendees').countDocuments({
+      eventId: new ObjectId(eventId)
     });
-  });
+    res.status(200).json({ eventId, attendeeCount: count });
+  } catch (err) {
+    console.error('Error counting attendees:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
-  app.put('/counter', (req, res) => {
-    const { objectId, user } = req.body;
+app.post('/event/:eventId/toggle-attend', isLoggedIn, async (req, res) => {
+  const eventId = req.params.eventId;
+  const userId = req.user._id;
 
-    db.collection('counter').findOneAndUpdate(
-      { _id: objectId, user },
-      { $inc: { counter: 1 } },
-      { sort: { _id: -1 }, upsert: true },
-      (err, result) => {
-        if (err) {
-          console.error('Error updating counter:', err);
-          return res.status(500).send('An error occurred');
+  if (!ObjectId.isValid(eventId)) {
+    return res.status(400).send('Invalid event ID');
+  }
+
+  try {
+    const existing = await db.collection('event_attendees').findOne({
+      eventId: new ObjectId(eventId),
+      userId: new ObjectId(userId)
+    });
+
+    if (existing) {
+      await db.collection('event_attendees').deleteOne({
+        eventId: new ObjectId(eventId),
+        userId: new ObjectId(userId)
+      });
+      return res.status(200).json({ attending: false });
+    } else {
+      await db.collection('event_attendees').insertOne({
+        eventId: new ObjectId(eventId),
+        userId: new ObjectId(userId)
+      });
+      return res.status(201).json({ attending: true });
+    }
+  } catch (err) {
+    console.error('Error toggling attendance:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+// Get attendee counts for all events
+app.get('/events/counts', isLoggedIn, async (req, res) => {
+  try {
+    const counts = await db.collection('event_attendees').aggregate([
+      {
+        $group: {
+          _id: '$eventId',
+          attendeeCount: { $sum: 1 }
         }
-        res.send(result);
       }
-    );
-  });
+    ]).toArray();
+
+    res.status(200).json(counts);
+  } catch (err) {
+    console.error('Error getting counts:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Add an attendee for a specific event
+app.post('/event/:eventId/attend', isLoggedIn, async (req, res) => {
+  const eventId = req.params.eventId;
+  const userId = req.user._id;
+
+  if (!ObjectId.isValid(eventId)) {
+    return res.status(400).send('Invalid event ID');
+  }
+
+  try {
+    // Check if already attending
+    const existing = await db.collection('event_attendees').findOne({
+      eventId: new ObjectId(eventId),
+      userId: new ObjectId(userId)
+    });
+
+    if (existing) {
+      return res.status(409).send('Already attending this event');
+    }
+
+    await db.collection('event_attendees').insertOne({
+      eventId: new ObjectId(eventId),
+      userId: new ObjectId(userId)
+    });
+
+    res.status(201).send('Attendance recorded');
+  } catch (err) {
+    console.error('Error adding attendee:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Remove an attendee for a specific event
+app.delete('/event/:eventId/attend', isLoggedIn, async (req, res) => {
+  const eventId = req.params.eventId;
+  const userId = req.user._id;
+
+  if (!ObjectId.isValid(eventId)) {
+    return res.status(400).send('Invalid event ID');
+  }
+
+  try {
+    const result = await db.collection('event_attendees').deleteOne({
+      eventId: new ObjectId(eventId),
+      userId: new ObjectId(userId)
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).send('Attendance record not found');
+    }
+
+    res.status(200).send('Attendance removed');
+  } catch (err) {
+    console.error('Error removing attendance:', err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
   // LOGOUT ====================================================================
   app.get('/logout', (req, res) => {
