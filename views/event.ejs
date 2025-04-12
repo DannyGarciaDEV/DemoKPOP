@@ -175,26 +175,25 @@
       <% } %>
     
       <section class="container attendees-container">
-        <!-- TODO check how to integrate it with the app -->
-        <!-- <button onclick="copyWebsiteLink()">ShareLink</button> -->
-        <% if (attendees?.length> 0) { %>
+        <% if (attendees?.length > 0) { %>
           <div>
-              <h3>
-              <%=attendees.length %> k-poppers are attending
-              </h3>
-              <% for (let n=0; n < attendees.length; n++) { %>
-              <p>
-              <%= attendees[n].user %>
-              </p>
-              <%}%>
+            <h3 id="attendee-count"><%= attendees.length %> K-poppers are attending</h3>
+            <div id="attendee-list">
+              <% attendees.forEach(attendee => { %>
+                <p><%= attendee.user %></p>
+              <% }); %>
+            </div>
           </div>
         <% } else { %>
           <div>
-            <p>No one is attending to this event</p>
+            <p>No one is attending this event</p>
           </div>
-      <%}%>
-          
-          <button class="btn" style="display: flex;  ">Attend</button>
+        <% } %>
+      
+        <button id="attend-button">
+          <%= isAttending ? "Attending (Click to Leave)" : "Not Attending (Click to Join)" %>
+        </button>
+      </section>
       </section>
       <!-- TODO Add edit functionality  -->
       <!-- <div class="btns"> -->

@@ -33,23 +33,31 @@ Array.from(msgBtn).forEach(function (element) {
   })
 })
 
-
 const attendeeButton = document.getElementById("attend-button");
 
 attendeeButton.addEventListener("click", (e) => {
-    const eventIdRoute = window.location.pathname;
-    fetch(`${eventIdRoute}/attend`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        if (response.ok) return response.json()
-      })
-      .then(data => {
-        window.location.reload(true);
+  e.preventDefault();
+  const eventIdRoute = window.location.pathname;
 
-      });
+  fetch(`${eventIdRoute}/toggle-attend`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Update the button text based on the attendance status
+    if (data.attending) {
+      attendeeButton.textContent = "Attending (Click to Leave)";
+    } else {
+      attendeeButton.textContent = "Not Attending (Click to Join)";
+    }
+    
+    // Reload the page to reflect the updated attendee count or other changes
+    window.location.reload(true);  // Force reload to reflect changes
+  })
+  .catch(error => {
+    console.error("Error toggling attendance:", error);
+  });
 });
-

@@ -1,8 +1,13 @@
 const counters = document.querySelectorAll('.counter');
 
-counters.forEach(function (counter) {
-  counter.addEventListener('click', function () {
-    const objectIdElement = this.parentNode.parentNode.querySelector('.objectId');
+counters.forEach(counter => {
+  counter.addEventListener('click', () => {
+    const objectIdElement = counter.closest('.item').querySelector('.objectId');
+    if (!objectIdElement) {
+      console.error('Object ID element not found.');
+      return;
+    }
+
     const objectId = objectIdElement.innerText;
 
     fetch('/counter', {
@@ -10,22 +15,19 @@ counters.forEach(function (counter) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        objectId: objectId
-      })
+      body: JSON.stringify({ objectId })
     })
-      .then(function (response) {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Error: ' + response.status);
-        }
-      })
-      .then(function (data) {
-        window.location.reload();
-      })
-      .catch(function (error) {
-        console.error('Error:', error);
-      });
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   });
 });
