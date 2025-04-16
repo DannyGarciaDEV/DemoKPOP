@@ -61,3 +61,4 @@ attendeeButton.addEventListener("click", (e) => {
     console.error("Error toggling attendance:", error);
   });
 });
+
