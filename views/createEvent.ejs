@@ -250,7 +250,6 @@
                 <!-- Contact Form Start -->
            
                  
-     
                 <div class="form-events">
                     <form id="eventForm">
                       <h2>Create a New Event</h2>
@@ -275,20 +274,45 @@
                         <input type="text" id="location" name="location" required>
                       </div>
                   
-                      <div class="form-group">
-                        <label for="videoUrl">YouTube Live Video (optional):</label>
-                        <input type="text" id="videoUrl" name="videoUrl" placeholder="https://youtube.com/your-stream-link">
-                      </div>
-                  
                       <button class="btn submsg" type="submit">Submit</button>
                     </form>
                   </div>
+                
 
         <!-- Contact Page Start -->
-
-
-       
-
+        <script>
+            document.getElementById('eventForm').addEventListener('submit', async function (e) {
+              e.preventDefault();
+          
+              const data = {
+                summary: document.getElementById('eventName').value,
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                location: document.getElementById('location').value
+              };
+          
+              try {
+                const res = await fetch('/event', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(data)
+                });
+          
+                if (res.ok) {
+                  window.location.href = res.url;
+                } else {
+                  const error = await res.text();
+                  console.error('Error:', error);
+                  alert('Something went wrong while creating the event.');
+                }
+              } catch (err) {
+                console.error('Fetch failed:', err);
+              }
+            });
+          </script>
+          
             <!-- Footer Copyright Start -->
             <div class="footer-copyright-area">
                 <div class="container">
@@ -349,39 +373,6 @@
    
 
 </body>
-<script>
-    document.getElementById('eventForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-  
-      const data = {
-        summary: document.getElementById('eventName').value,
-        startDate: document.getElementById('startDate').value,
-        endDate: document.getElementById('endDate').value,
-        location: document.getElementById('location').value,
-        videoUrl: document.getElementById('videoUrl').value,
-      };
-  
-      try {
-        const res = await fetch('/event', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        });
-  
-        if (res.ok) {
-          const redirectedUrl = await res.url;
-          window.location.href = redirectedUrl; // optionally redirect to event page
-        } else {
-          const error = await res.text();
-          console.error('Error:', error);
-          alert('Something went wrong while creating the event.');
-        }
-      } catch (err) {
-        console.error('Fetch failed:', err);
-      }
-    });
-  </script>
+
 
 </html>
