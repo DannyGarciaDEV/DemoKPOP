@@ -252,7 +252,7 @@
                  
      
                 <div class="form-events">
-                    <form action="/event" method="POST">
+                    <form id="eventForm">
                       <h2>Create a New Event</h2>
                   
                       <div class="form-group">
@@ -283,10 +283,6 @@
                       <button class="btn submsg" type="submit">Submit</button>
                     </form>
                   </div>
-                      
-                   
-                  </div>
-                   </div>
 
         <!-- Contact Page Start -->
 
@@ -353,5 +349,39 @@
    
 
 </body>
+<script>
+    document.getElementById('eventForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+  
+      const data = {
+        summary: document.getElementById('eventName').value,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        location: document.getElementById('location').value,
+        videoUrl: document.getElementById('videoUrl').value,
+      };
+  
+      try {
+        const res = await fetch('/event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+  
+        if (res.ok) {
+          const redirectedUrl = await res.url;
+          window.location.href = redirectedUrl; // optionally redirect to event page
+        } else {
+          const error = await res.text();
+          console.error('Error:', error);
+          alert('Something went wrong while creating the event.');
+        }
+      } catch (err) {
+        console.error('Fetch failed:', err);
+      }
+    });
+  </script>
 
 </html>
