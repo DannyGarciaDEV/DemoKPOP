@@ -125,18 +125,7 @@
   <!-- Offcanvas End -->
 
   <div class="about-section section-padding-03">
-  <% if(event.videoId){%>
 
-  <div id="eventMap">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/<%= event.videoId %>" title="YouTube video de
-                player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
-
-    <% } else {%>
-    <div id="eventMap">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed?listType=playlist&list=RDCLAK5uy_k27uu-EtQ_b5U2r26DNDZOmNqGdccUIGQ" title="YouTube video de
-                  player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-      <% } %>
       <a href="https://www.google.com/maps/search/?api=1&query=<%= event.location %>" target="_blank">
         <img id="mapApi" src="https://maps.googleapis.com/maps/api/staticmap?center=<%= event.location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= event.location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94">
       </a>
