@@ -1,6 +1,8 @@
 const { createEvent } = require('../config/googleCloud.js');
 const ObjectId = require('mongodb').ObjectID;
-const getVideoId = require('get-video-id');
+
+const { body, validationResult } = require('express-validator');
+
 
 module.exports = function (app, passport, db) {
 
@@ -250,64 +252,58 @@ module.exports = function (app, passport, db) {
     });
   });
 
+  app.post(
+    '/event',
+    isLoggedIn,
+    [
+      body('summary').notEmpty().withMessage('Summary is required'),
+      body('location').notEmpty().withMessage('Location is required'),
+      body('startDate').isISO8601().withMessage('Invalid start date'),
+      body('endDate').isISO8601().withMessage('Invalid end date')
+    ],
+    async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
+      const { summary, location, startDate, endDate } = req.body;
 
-  app.post('/event', isLoggedIn, function (req, res) {
-    const newEvent = {
-      'summary': req.body.summary,
-      // 'description': req.body.description + `\n\nCreated by ${req.user.local.email}`,
-      'location': req.body.location,
-      'start': {
-        'dateTime': new Date(req.body.startDate).toISOString(),
-        'timeZone': 'America/New_York',
-      },
-      'end': {
-        'dateTime': new Date(req.body.endDate).toISOString(),
-        'timeZone': 'America/New_York',
-      },
-    };
-    createEvent(newEvent).then(calendarResult => {
-      // With the calendarResult, save the ID in the database along with the event details
-      const { id } = getVideoId(req.body.videoUrl)
-      db.collection('events').save({
-        ...newEvent,
-        gCalendarMetadata: {
-          id: calendarResult.data.id,
-          htmlLink: calendarResult.data.htmlLink,
-          iCalUID: calendarResult.data.iCalUID,
-
+      const newEvent = {
+        summary,
+        location,
+        start: {
+          dateTime: new Date(startDate).toISOString(),
+          timeZone: 'America/New_York'
         },
-        videoId: id,
-        createdBy: req.user._id,
-        user: req.user.local.email,
-      }, (err, writeResult) => {
-        if (err) throw err
-        res.redirect(`/event/${writeResult.ops[0]._id}`);
-      });
+        end: {
+          dateTime: new Date(endDate).toISOString(),
+          timeZone: 'America/New_York'
+        }
+      };
 
-    }).catch(err => {
-      res.status(500).send(err);
-    })
-  })
+      try {
+        const calendarResult = await createEvent(newEvent);
 
+        const eventData = {
+          ...newEvent,
+          gCalendarMetadata: {
+            id: calendarResult?.data?.id,
+            htmlLink: calendarResult?.data?.htmlLink,
+            iCalUID: calendarResult?.data?.iCalUID
+          },
+          createdBy: req.user._id,
+          user: req.user.local.email
+        };
 
-
-
-
-
-
-
-
-  app.post('/videoId', (req, res) => {
-    db.collection('videoId').save({ post: req.body.videoId }, (err, result) => {
-      if (err) return console.log(err)
-      console.log('saved to database')
-      res.redirect('/profile')
-    })
-  })
-
-
-
+        const result = await db.collection('events').insertOne(eventData);
+        res.redirect(`/event/${result.insertedId}`);
+      } catch (err) {
+        console.error('Event creation error:', err);
+        res.status(500).send('Internal Server Error');
+      }
+    }
+  );
 
   // LOGOUT ==============================
   app.get('/logout', function (req, res) {
