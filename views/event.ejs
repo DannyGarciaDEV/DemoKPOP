@@ -129,7 +129,7 @@
       <a href="https://www.google.com/maps/search/?api=1&query=<%= event.location %>" target="_blank">
         <img id="mapApi" src="https://maps.googleapis.com/maps/api/staticmap?center=<%= event.location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= event.location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94">
       </a>
-
+      <img  style="width:500px; height:400px;"src="<%= event.imageUrl %>" />
 
     </div>
     <section class="container">
@@ -138,8 +138,12 @@
         <h4>Created by <%= event.user %></h4>
         <!-- TODO bootstrap form-group so that they look aligned-->
         <div class="input">
-            <span><i class="fas fa-map-marker-alt"></i> Location:  <%= event.location %></span>
-           
+          <span>
+            <i class="fas fa-map-marker-alt"></i> Location:
+            <a href="https://www.google.com/maps/search/<%= encodeURIComponent(event.location) %>" target="_blank" rel="noopener noreferrer">
+              <%= event.location %>
+            </a>
+          </span>
         </div>
 
         <div class="input">
@@ -158,7 +162,7 @@
       </div>
     
       <% if (event.createdBy) { %>
-        <button class="delete-event-btn" data-id="<%= event._id %>" title="Delete Event">
+        <button class=" btn delete-event-btn" data-id="<%= event._id %>" title="Delete Event">
           <i class="fas fa-trash"></i> Delete Event
         </button>
       <% } %>
@@ -179,48 +183,57 @@
           </div>
         <% } %>
       
-        <button id="attend-button">
+        <button class="btn" id="attend-button">
           <%= isAttending ? "Attending (Click to Leave)" : "Not Attending (Click to Join)" %>
         </button>
       </section>
       </section>
-      <!-- TODO Add edit functionality  -->
-      <!-- <div class="btns"> -->
-        <!-- <button class="btn" onclick="toggleEditMode()"> Edit <i class="fas fa-pencil-alt"></i></button>
-        <button class="btn" onclick="saveChanges()">Save</button> -->
-
-      <!-- </div> -->
+  
       <div class="container">
         <% if (messages && messages.length > 0) { %>
           <div class="testimonial-area">
             <% for (let n = 0; n < messages.length; n++) { %>
-              <div class="message-container" style="border: 1px solid rgb(253, 253, 253); margin-bottom: 10px; padding: 10px;">
-                <p style="font-size: medium;">
+              <div class="message-container" 
+                   style="border: 1px solid #fdfdfd; margin-bottom: 12px; padding: 12px; border-radius: 6px; background-color: #f9f9f9;">
+                
+                <p style="font-size: 1rem; margin: 0 0 8px 0;">
                   <%= messages[n].content %>
                 </p>
       
-                <div class="author-details">
-                  <h5 class="name" style="font-size: small;">
+                <div class="author-details" style="margin-bottom: 8px;">
+                  <h5 class="name" style="font-size: 0.85rem; margin: 0;">
                     <%= messages[n].createdBy %>
                   </h5>
-                  <span class="designation" style="font-size: small;">
+                  <span class="designation" style="font-size: 0.8rem; color: #555;">
                     <%= new Date(messages[n].createdAt).toLocaleString() %>
                   </span>
                 </div>
       
                 <% if (messages[n].createdBy === user) { %>
                   <!-- Delete Button -->
-                  <button class="delete-btn" data-id="<%= messages[n]._id %>" data-event-id="<%= messages[n].eventId %>" title="Delete">
+                  <button class=" btn delete-btn" 
+                          data-id="<%= messages[n]._id %>" 
+                          data-event-id="<%= messages[n].eventId %>" 
+                          title="Delete"
+                          style="margin-right: 6px;">
                     <i class="fas fa-trash"></i>
                   </button>
       
                   <!-- Edit Button -->
-                  <button class="toggle-edit" data-id="<%= messages[n]._id %>">✏️ Edit</button>
+                  <button class="toggle-edit btn" 
+                          data-id="<%= messages[n]._id %>" 
+                          style="margin-right: 6px;">
+                    ✏️ Edit
+                  </button>
       
                   <!-- Hidden Edit Form -->
-                  <form class="edit-message-form" data-id="<%= messages[n]._id %>" data-event-id="<%= messages[n].eventId %>" style="display: none; margin-top: 5px;">
-                    <input type="text" name="text" value="<%= messages[n].content %>" required />
-                    <button type="submit">Save</button>
+                  <form class="edit-message-form" 
+                        data-id="<%= messages[n]._id %>" 
+                        data-event-id="<%= messages[n].eventId %>" 
+                        style="display: none; margin-top: 8px;">
+                    <input type="text" name="text" value="<%= messages[n].content %>" required 
+                           style="width: 80%; padding: 4px; margin-right: 6px;"/>
+                    <button class="btn" type="submit" style="padding: 4px 8px;">Save</button>
                   </form>
                 <% } %>
               </div>
@@ -233,11 +246,13 @@
         <% } %>
       </div>
       
-      <!-- Message Comment Form (no conflicts) -->
-      <form class="form-container" id="new-message-form">
-        <input style="border: 1px solid black;" type="text" placeholder="Let's Talk" name="message" required />
-        <button class="btn msgBtn comment-btn" type="submit">Comment</button>
+      <!-- Message Comment Form -->
+      <form class="form-container" id="new-message-form" style="margin-top: 20px;">
+        <input type="text" name="message" placeholder="Let's Talk" required 
+               style="border: 1px solid #000; padding: 8px; width: 70%; margin-right: 8px;" />
+        <button class="btn msgBtn comment-btn" type="submit" style="padding: 8px 12px;">Comment</button>
       </form>
+      
 
   <div class="footer-copyright-area">
     <div class="container">
@@ -246,7 +261,7 @@
           <div class="col-lg-12">
             <!-- Footer Copyright Text Start -->
             <div class="copyright-text text-center">
-              <p>2023 Copyright Danny Records. All Rights Reserved</p>
+              <p>2024 Copyright DannyGarciaDEV. All Rights Reserved</p>
             </div>
             <!-- Footer Copyright Text End -->
           </div>

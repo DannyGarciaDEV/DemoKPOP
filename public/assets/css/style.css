@@ -8897,16 +8897,18 @@ iframe {
 }        
 
 
-.form-container{
+.form-container {
   display: flex;
-  align-items: center;
   flex-direction: row;
-  background-color: pink;
+  align-items: center;
+  gap: 10px;
+width: 50%;
   padding: 20px;
   border-radius: 5px;
+  background-color: #f0f0f0; 
+  margin: 0 auto;
+
 }
-
-
 .message{
   display: flex;
   flex-wrap: nowrap;

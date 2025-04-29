@@ -1,8 +1,10 @@
 const { createEvent } = require('../config/googleCloud.js');
+const multer = require('multer');
+const { cloudinary } = require('../config/cloudinary.js');
 const ObjectId = require('mongodb').ObjectID;
-
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 const { body, validationResult } = require('express-validator');
-
 
 module.exports = function (app, passport, db) {
 
@@ -252,58 +254,74 @@ module.exports = function (app, passport, db) {
     });
   });
 
-  app.post(
-    '/event',
-    isLoggedIn,
-    [
-      body('summary').notEmpty().withMessage('Summary is required'),
-      body('location').notEmpty().withMessage('Location is required'),
-      body('startDate').isISO8601().withMessage('Invalid start date'),
-      body('endDate').isISO8601().withMessage('Invalid end date')
-    ],
-    async (req, res) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+  const validateEvent = [
+    body('summary').notEmpty().withMessage('Summary is required'),
+    body('location').notEmpty().withMessage('Location is required'),
+    body('startDate').isISO8601().toDate().withMessage('Start date must be valid'),
+    body('endDate').isISO8601().toDate().withMessage('End date must be valid'),
+  ];app.post('/event', isLoggedIn, upload.single('image'), validateEvent, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+  
+    const { summary, location, startDate, endDate, imageUrl} = req.body;
+   
+  
+    try {
+      if (req.file) {
+        imageUrl = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            { resource_type: 'image' },
+            (error, result) => {
+              if (error) {
+                console.error('Cloudinary upload error:', error);
+                return reject('Error uploading image');
+              }
+              resolve(result.secure_url);
+            }
+          );
+          req.file.stream.pipe(uploadStream);
+        });
       }
-
-      const { summary, location, startDate, endDate } = req.body;
-
+  
       const newEvent = {
         summary,
         location,
         start: {
           dateTime: new Date(startDate).toISOString(),
-          timeZone: 'America/New_York'
+          timeZone: 'America/New_York',
         },
         end: {
           dateTime: new Date(endDate).toISOString(),
-          timeZone: 'America/New_York'
-        }
+          timeZone: 'America/New_York',
+        },
+        imageUrl,
       };
-
-      try {
-        const calendarResult = await createEvent(newEvent);
-
-        const eventData = {
-          ...newEvent,
-          gCalendarMetadata: {
-            id: calendarResult?.data?.id,
-            htmlLink: calendarResult?.data?.htmlLink,
-            iCalUID: calendarResult?.data?.iCalUID
-          },
-          createdBy: req.user._id,
-          user: req.user.local.email
-        };
-
-        const result = await db.collection('events').insertOne(eventData);
-        res.redirect(`/event/${result.insertedId}`);
-      } catch (err) {
-        console.error('Event creation error:', err);
-        res.status(500).send('Internal Server Error');
-      }
+  
+      const calendarResult = await createEvent(newEvent);
+  
+      const eventData = {
+        ...newEvent,
+        gCalendarMetadata: {
+          id: calendarResult?.data?.id,
+          htmlLink: calendarResult?.data?.htmlLink,
+          iCalUID: calendarResult?.data?.iCalUID,
+        },
+        createdBy: req.user._id,
+        user: req.user.local.email,
+      };
+  
+      
+      const result = await db.collection('events').insertOne(eventData);
+  
+      res.redirect(`/event/${result.insertedId}`);
+    } catch (err) {
+      console.error('Event creation error:', err);
+      res.status(500).send('Internal Server Error');
     }
-  );
+  });
+  
 
   // LOGOUT ==============================
   app.get('/logout', function (req, res) {
