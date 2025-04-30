@@ -125,13 +125,20 @@
   <!-- Offcanvas End -->
 
   <div class="about-section section-padding-03">
+    </div>
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px;">
 
       <a href="https://www.google.com/maps/search/?api=1&query=<%= event.location %>" target="_blank">
-        <img id="mapApi" src="https://maps.googleapis.com/maps/api/staticmap?center=<%= event.location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= event.location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94">
+        <img id="mapApi" 
+             src="https://maps.googleapis.com/maps/api/staticmap?center=<%= event.location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= event.location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94"
+             style="width: 600px; height: 300px; object-fit: cover;" />
       </a>
-      <img  style="width:500px; height:400px;"src="<%= event.imageUrl %>" />
-
+    
+      <img src="<%= event.imageUrl %>" 
+           style="width: 500px; height: 400px; object-fit: cover;" />
+    
     </div>
+   
     <section class="container">
     <div>
         <h2>Event: <%= event.summary %></h2>
