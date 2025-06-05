@@ -28,7 +28,18 @@
 
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-
+ <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 300px;
+      width: 300px;
+      margin-top: 1rem;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+  </style>
 
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
     <!-- <link rel="stylesheet" href="assets/css/vendor/plugins.min.css">
@@ -325,7 +336,65 @@
           
               <!-- Event List Content Start -->
            
-                         
+                         <h2>📍 K-pop Events Around Boston</h2>
+  <div id="map"></div>
+
+ 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  const eventsFromDB = <%- JSON.stringify(events) %>;
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const map = L.map('map').setView([42.3601, -71.0589], 12); // Boston
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(map);
+
+    // ✅ Fixed function: accept a parameter, no backticks
+    async function geocodeAddress(address) {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+      try {
+        const response = await fetch(url);
+        const results = await response.json();
+        if (results.length > 0) {
+          return {
+            lat: parseFloat(results[0].lat),
+            lon: parseFloat(results[0].lon)
+          };
+        }
+      } catch (err) {
+        console.error(`Error geocoding ${address}:`, err);
+      }
+      return null;
+    }
+
+    async function showEventsOnMap() {
+      for (const event of eventsFromDB) {
+        const coords = await geocodeAddress(event.location);
+        if (!coords) {
+          console.warn("Skipping map marker. Location not found for:", event.location);
+          continue;
+        }
+
+        const popupHTML = `
+          <strong>${event.summary}</strong><br>
+          📍 ${event.location}<br>
+          📅 ${new Date(event.start.dateTime).toLocaleString('en-US')}<br>
+          <a href="/event/${event._id}" target="_blank">🔗 View Details</a>
+        `;
+
+        L.marker([coords.lat, coords.lon])
+          .addTo(map)
+          .bindPopup(popupHTML);
+      }
+    }
+
+    showEventsOnMap();
+  });
+</script>
+</script>
               <div class="eventLayout">
                 <% for (let j = events.length - 1; j >= 0; j--) { %>
                  
@@ -343,7 +412,7 @@
                       <span>
                         <i class="fas fa-map-marker-alt"></i>
                         <%= events[j].location %>
-                         <div>  <img style="height:100px; weight: 100px;" src="https://maps.googleapis.com/maps/api/staticmap?center=<%= events[j].location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= events[j].location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94"></div>
+                        
                       </span>
                     </div>
                  

@@ -20,6 +20,18 @@ module.exports = function (app, passport, db) {
     });
   });
 
+
+
+  app.get('/calendar', (req, res) => {
+    db.collection('events').find().toArray((err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error fetching events');
+      }
+      res.render('calendar.ejs', { events: result, user: req.user });
+    });
+  });
+
   // PROFILE SECTION ===========================================================
   app.get('/profile', isLoggedIn, async (req, res) => {
     try {
@@ -160,6 +172,7 @@ module.exports = function (app, passport, db) {
             messages: messages || [],
             attendees: attendees || [],
             user: req.user?.local?.email,
+           
             isAttending: isAttending
           });
         });
@@ -254,18 +267,21 @@ module.exports = function (app, passport, db) {
     });
   });
 
-  const validateEvent = [
-    body('summary').notEmpty().withMessage('Summary is required'),
-    body('location').notEmpty().withMessage('Location is required'),
-    body('startDate').isISO8601().toDate().withMessage('Start date must be valid'),
-    body('endDate').isISO8601().toDate().withMessage('End date must be valid'),
+const validateEvent = [
+  body('summary').notEmpty().withMessage('Summary is required'),
+  body('location').notEmpty().withMessage('Location is required'),
+  body('city').notEmpty().withMessage('City is required'),
+  body('startDate').isISO8601().toDate().withMessage('Start date must be valid'),
+  body('endDate').isISO8601().toDate().withMessage('End date must be valid'),
+  body('description').optional().isString().isLength({ max: 1000 }).withMessage('Description must be a string and less than 1000 characters'),
+
   ];app.post('/event', isLoggedIn, upload.single('image'), validateEvent, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
   
-    const { summary, location, startDate, endDate, imageUrl} = req.body;
+const { summary, location, city, description, startDate, endDate, imageUrl } = req.body;
    
   
     try {
@@ -287,7 +303,9 @@ module.exports = function (app, passport, db) {
   
       const newEvent = {
         summary,
-        location,
+        description,
+          location,
+  city,
         start: {
           dateTime: new Date(startDate).toISOString(),
           timeZone: 'America/New_York',
@@ -299,15 +317,10 @@ module.exports = function (app, passport, db) {
         imageUrl,
       };
   
-      const calendarResult = await createEvent(newEvent);
   
       const eventData = {
         ...newEvent,
-        gCalendarMetadata: {
-          id: calendarResult?.data?.id,
-          htmlLink: calendarResult?.data?.htmlLink,
-          iCalUID: calendarResult?.data?.iCalUID,
-        },
+        
         createdBy: req.user._id,
         user: req.user.local.email,
       };
@@ -315,7 +328,7 @@ module.exports = function (app, passport, db) {
       
       const result = await db.collection('events').insertOne(eventData);
   
-      res.redirect(`/event/${result.insertedId}`);
+   res.redirect(`/event/${result.insertedId}`);
     } catch (err) {
       console.error('Event creation error:', err);
       res.status(500).send('Internal Server Error');

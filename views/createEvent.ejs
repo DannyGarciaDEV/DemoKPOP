@@ -103,35 +103,63 @@
         </div>
 
         <!-- Event Form -->
-        <div class="form-events">
-            <form id="eventForm">
-                <h2>Create a New Event</h2>
-                <div class="form-group">
-                    <label for="eventName">Event Summary:</label>
-                    <input type="text" id="eventName" name="summary" required>
-                </div>
-                <div class="form-group">
-                    <label for="startDate">Start Date:</label>
-                    <input type="datetime-local" id="startDate" name="startDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="endDate">End Date:</label>
-                    <input type="datetime-local" id="endDate" name="endDate" required>
-                </div>
-                <div class="form-group">
+<div class="form-events">
+  <form id="eventForm">
+    <h2>Create a New Event</h2>
+
+    <div class="form-group mb-3">
+      <label for="eventName">Event Name:</label>
+      <input type="text" id="eventName" name="summary" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="description">Event Description:</label>
+      <textarea id="description" name="description" rows="4" class="form-control" placeholder="Write a brief description of the event..." required></textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="startDate">Start Date:</label>
+      <input type="datetime-local" id="startDate" name="startDate" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="endDate">End Date:</label>
+      <input type="datetime-local" id="endDate" name="endDate" class="form-control" required>
+    </div>
+
+   <div class="form-group">
                     <label for="imageUpload">Event Image:</label>
                     <button type="button" class="btn" id="upload_widget">Upload Image</button>
                     <input type="hidden" id="uploadedImageUrl" name="imageUrl">
                 </div>
-                <div class="form-group">
-                    <label for="location">Event Location:</label>
-                    <input type="text" id="location" name="location" required>
-                </div>
-                <button class="btn submsg" type="submit">Submit</button>
-            </form>
-        </div>
 
-        <!-- Scripts -->
+    <div class="form-group mb-3">
+      <label for="location">Event Location:</label>
+      <input type="text" id="location" name="location" class="form-control" required>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="city">City:</label>
+      <select id="city" name="city" class="form-control" required>
+        <option value="" disabled selected>Select a city</option>
+        <option value="Boston">Boston</option>
+        <option value="Worcester">Worcester</option>
+        <option value="Somerville">Somerville</option>
+        <option value="Allston">Allston</option>
+        <option value="Brighton">Brighton</option>
+        <option value="Cambridge">Cambridge</option>
+        <option value="Roxbury">Roxbury</option>
+      </select>
+    </div>
+
+    <div class="form-group mb-4">
+      <label for="rsvpLink">RSVP Link (optional):</label>
+      <input type="url" id="rsvpLink" name="rsvpLink" class="form-control" placeholder="https://example.com/form">
+    </div>
+
+    <button class="btn submsg" type="submit">Submit</button>
+  </form>
+</div>
         <script>
             const cloudinaryWidget = cloudinary.createUploadWidget({
                 cloudName: 'df0whbpf6',
@@ -160,13 +188,16 @@
             document.getElementById('eventForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
             
-                const data = {
-                    summary: document.getElementById('eventName').value,
-                    startDate: document.getElementById('startDate').value,
-                    endDate: document.getElementById('endDate').value,
-                    location: document.getElementById('location').value,
-                    imageUrl: document.getElementById('uploadedImageUrl').value
-                };
+              const data = {
+  summary: document.getElementById('eventName').value,
+  startDate: document.getElementById('startDate').value,
+  endDate: document.getElementById('endDate').value,
+  location: document.getElementById('location').value,
+  imageUrl: document.getElementById('uploadedImageUrl').value,
+  description: document.getElementById('description').value,
+  city: document.getElementById('city').value,
+  rsvpLink: document.getElementById('rsvpLink').value 
+};
             
                 if (!data.imageUrl) {
                     alert("Please upload an image before submitting.");
@@ -183,18 +214,19 @@
                         },
                         body: JSON.stringify(data)
                     });
-            
-                    if (res.ok) {
-                        window.location.href = res.url;
-                    } else {
-                        const error = await res.text();
-                        console.error('Server error:', error);
-                        alert('Something went wrong while creating the event.');
-                    }
-                } catch (err) {
-                    console.error('Fetch failed:', err);
-                }
-            });
+             if (res.ok) {
+      alert("🎉 Event created successfully!");
+      document.getElementById('eventForm').reset();
+      document.getElementById('uploadedImageUrl').value = '';
+    } else {
+      const error = await res.text();
+      console.error('Server error:', error);
+      alert('Something went wrong while creating the event.');
+    }
+  } catch (err) {
+    console.error('Fetch failed:', err);
+  }
+});
         </script>
 
         <div class="footer-copyright-area">
@@ -251,7 +283,7 @@
 
     <!-- Main JS -->
     <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/main2.js"></script>
+ 
    
 
 </body>

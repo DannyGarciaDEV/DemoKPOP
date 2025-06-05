@@ -55,23 +55,6 @@ function saveChanges() {
     }
 }
 
-function toggleFrames() {
-    var videoFrame = document.getElementById("videoFrame");
-    var playlistFrame = document.getElementById("playlistFrame");
-    var mapImage = document.getElementById("mapImage");
-
-    if (videoFrame.style.display === "none") {
-        videoFrame.style.display = "block";
-        playlistFrame.style.display = "none";
-        mapImage.style.display = "block";
-    } else {
-        videoFrame.style.display = "none";
-        playlistFrame.style.display = "block";
-        mapImage.style.display = "none";
-    }
-}
-
-
 
 
 

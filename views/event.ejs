@@ -17,7 +17,11 @@
   <!-- Icon Font CSS -->
   <link rel="stylesheet" href="/assets/css/plugins/all.min.css">
   <link rel="stylesheet" href="/assets/css/plugins/flaticon.css">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+<!-- Font Awesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <!-- Plugins CSS -->
   <link rel="stylesheet" href="/assets/css/plugins/bootstrap.min.css">
   <link rel="stylesheet" href="/assets/css/plugins/swiper-bundle.min.css">
@@ -128,11 +132,7 @@
     </div>
     <div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px;">
 
-      <a href="https://www.google.com/maps/search/?api=1&query=<%= event.location %>" target="_blank">
-        <img id="mapApi" 
-             src="https://maps.googleapis.com/maps/api/staticmap?center=<%= event.location %>&zoom=15&size=600x300&markers=color:red%7Clabel:A%7C<%= event.location %>&key=AIzaSyB0CTM-52TueOr9JPDX_8ThIelm-i49T94"
-             style="width: 600px; height: 300px; object-fit: cover;" />
-      </a>
+  
     
       <img src="<%= event.imageUrl %>" 
            style="width: 500px; height: 400px; object-fit: cover;" />
@@ -140,62 +140,64 @@
     </div>
    
     <section class="container">
-    <div>
-        <h2>Event: <%= event.summary %></h2>
-        <h4>Created by <%= event.user %></h4>
-        <!-- TODO bootstrap form-group so that they look aligned-->
-        <div class="input">
-          <span>
-            <i class="fas fa-map-marker-alt"></i> Location:
-            <a href="https://www.google.com/maps/search/<%= encodeURIComponent(event.location) %>" target="_blank" rel="noopener noreferrer">
-              <%= event.location %>
-            </a>
-          </span>
-        </div>
+        <h1 style="color: #fc097c;"> <%= event.summary %></h1>
 
-        <div class="input">
-        <span><i class="far fa-calendar-alt"></i> Date: <%= new Date(event.start.dateTime).toLocaleDateString('en-US')  %></span>
-        
-        </div>
+  <p >Created by <strong><%= event.user %></strong></p>
 
-        <div class="input">
-        <span><i class="far fa-clock"></i> Starts: <%=  new Date(event.start.dateTime).toLocaleTimeString('en-US') %></span>
-       
-        </div>
+<div class="container my-4 p-4 rounded shadow-sm" style="background-color: rgb(245, 237, 244);">
 
-        <div class="input">
-        <span><i class="far fa-clock"></i> Ends: <%= new Date(event.end.dateTime).toLocaleTimeString('en-US') %></span>
-        </div>
-      </div>
-    
-      <% if (event.createdBy) { %>
-        <button class=" btn delete-event-btn" data-id="<%= event._id %>" title="Delete Event">
-          <i class="fas fa-trash"></i> Delete Event
-        </button>
-      <% } %>
-    
-      <section class="container attendees-container">
-        <% if (attendees?.length > 0) { %>
-          <div>
-            <h3 id="attendee-count"><%= attendees.length %> K-poppers are attending</h3>
-            <div id="attendee-list">
-              <% attendees.forEach(attendee => { %>
-                <p><%= attendee.user %></p>
-              <% }); %>
-            </div>
-          </div>
-        <% } else { %>
-          <div>
-            <p>No one is attending this event</p>
-          </div>
-        <% } %>
+  <h4 class="mt-4">Description</h4>
+  <p><%= event.description %></p>
+
+  <div class="mt-4">
+    <div class="mb-2 d-flex align-items-center">
+      <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+      <span>
+        Location: 
+        <a href="https://www.google.com/maps/search/<%= encodeURIComponent(event.location) %>" target="_blank" rel="noopener noreferrer">
+          <%= event.location %>
+        </a>
+      </span>
+    </div>
+
+    <div class="mb-2 d-flex align-items-center">
+      <i class="far fa-calendar-alt me-2 text-info"></i>
+      <span>Date: <%= new Date(event.start.dateTime).toLocaleDateString('en-US') %></span>
+    </div>
+
+    <div class="mb-2 d-flex align-items-center">
+      <i class="far fa-clock me-2 text-success"></i>
+      <span>Starts: <%= new Date(event.start.dateTime).toLocaleTimeString('en-US') %></span>
+    </div>
+
+    <div class="mb-4 d-flex align-items-center">
+      <i class="far fa-clock me-2 text-danger"></i>
+      <span>Ends: <%= new Date(event.end.dateTime).toLocaleTimeString('en-US') %></span>
+    </div>
+<div class="d-flex justify-content-between align-items-start mt-4">
+  <% if (event.createdBy) { %>
+    <button class="btn btn-danger delete-event-btn" data-id="<%= event._id %>" title="Delete Event">
+      <i class="fas fa-trash-alt me-1"></i> Delete Event
+    </button>
+  <% } %>
+
+  <section class="text-end">
+    <% if (attendees?.length > 0) { %>
+      <h5 id="attendee-count"><%= attendees.length %> K-poppers are attending</h5>
+      <div id="attendee-list" class="mb-3">
       
-        <button class="btn" id="attend-button">
-          <%= isAttending ? "Attending (Click to Leave)" : "Not Attending (Click to Join)" %>
-        </button>
-      </section>
-      </section>
-  
+      </div>
+    <% } else { %>
+      <p class="text-muted">No one is attending this event yet.</p>
+    <% } %>
+
+    <button class="btn btn-primary" id="attend-button">
+      <%= isAttending ? "Attending (Click to Leave)" : "Not Attending (Click to Join)" %>
+    </button>
+  </section>
+</div>
+</div>
+</div>
       <div class="container">
         <% if (messages && messages.length > 0) { %>
           <div class="testimonial-area">
