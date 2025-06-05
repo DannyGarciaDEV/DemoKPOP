@@ -1,4 +1,4 @@
-const { createEvent } = require('../config/googleCloud.js');
+
 const multer = require('multer');
 const { cloudinary } = require('../config/cloudinary.js');
 const ObjectId = require('mongodb').ObjectID;
