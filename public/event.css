@@ -1,15 +1,12 @@
-
- 
-
 #eventContainer {
     border: 1px solid #838282;
     display: flex;
-    align-content: space-around;
-    flex-wrap: nowrap;
     flex-direction: column;
     justify-content: space-around;
     align-items: flex-start;
-    width:23%
+    width: 23%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 /* Style for the spans */
@@ -23,22 +20,79 @@
     width: 100%;
     margin-bottom: 5px;
     background-color: #ccc;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 /* Style for the save button */
 button {
     background-color: #fd2ba5;
     color: white;
-   
-    display:flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
-    
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
 }
 
-div{
+/* Centering container */
+div {
     display: flex;
-   
     align-items: center;
     justify-content: center;
-    align-content: center;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+#eventContainer {
+    border: 1px solid #838282;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+    width: 23%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Style for the spans */
+#eventContainer span {
+    display: inline-block;
+    width: 100px;
+}
+
+/* Style for the input fields */
+#eventContainer input {
+    width: 100%;
+    margin-bottom: 5px;
+    background-color: #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+/* Style for the save button */
+button {
+    background-color: #fd2ba5;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+}
+
+/* Centering container */
+div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 10px;
+}
 }

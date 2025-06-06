@@ -8671,13 +8671,12 @@ textarea:-ms-input-placeholder {
     width: 60%;
   }
 
-
-
+}
 
 .eventLayout li {
   display: flex;
-  flex-direction: column;  /* Ensures content is stacked vertically */
-  justify-content: space-between;  /* Distributes space between elements */
+  flex-direction: column;
+  justify-content: space-between;
   margin-bottom: 24px;
   padding: 20px 25px;
   background-color: #ffffff;
@@ -8687,10 +8686,17 @@ textarea:-ms-input-placeholder {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   line-height: 1.6;
   font-size: 1rem;
-  height: 200px;  /* Keeps the fixed height for consistency */
+  height: auto; /* Use auto for flexibility on smaller screens */
+  min-height: 200px; /* Optional: maintain structure without forcing fixed height */
 }
 
-.event-name {
+.eventLayout li:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.event-name,
+.eventLayout li a {
   color: #fc097c;
   font-weight: bold;
   text-decoration: none;
@@ -8698,14 +8704,38 @@ textarea:-ms-input-placeholder {
   transition: color 0.3s ease;
 }
 
-.event-name:hover {
+.event-name:hover,
+.eventLayout li a:hover {
   color: #d50068;
   text-decoration: underline;
 }
-.eventLayout li:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+.eventLayout li a {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.2rem;
+  border-bottom: 2px solid #fc097c;
+  padding-bottom: 3px;
 }
+
+.eventLayout li span {
+  font-weight: 700;
+  color: #333;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.eventLayout li span:first-of-type {
+  margin-top: 0;
+  text-transform: none;
+}
+
+.eventLayout li .eventDetails {
+  margin-top: 4px;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
 .no-events p {
   font-size: 1rem;
   color: #444;
@@ -8730,49 +8760,31 @@ textarea:-ms-input-placeholder {
   text-decoration: underline;
 }
 
-.eventLayout li a {
-  color: #fc097c;
-  text-decoration: none;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1.2rem;
-  font-weight: bold;
- 
-  border-bottom: 2px solid #fc097c;
-  padding-bottom: 3px;
-  transition: color 0.3s ease;
+/* RESPONSIVE STYLES */
+@media (max-width: 468px) {
+  .eventLayout li {
+    padding: 16px 18px;
+    font-size: 0.95rem;
+    min-height: 150px;
+  }
+
+  .eventLayout li span {
+    font-size: 0.95rem;
+  }
+
+  .eventLayout li a {
+    font-size: 1.05rem;
+  }
+
+  .event-name {
+    font-size: 1rem;
+  }
+
+  .no-events p {
+    font-size: 0.95rem;
+    padding: 12px 16px;
+  }
 }
-
-.eventLayout li a:hover {
-  color: #d50068; /* Slightly darker pink when hovered */
-}
-
-.eventLayout li span {
- 
-  font-weight: 700;
-  color: #333;
-  font-size: 1.05rem;
-  margin-bottom: 8px;
-
-  text-transform: uppercase; /* Adds a clean, modern touch */
-}
-
-.eventLayout li span:first-of-type {
-  margin-top: 0;
-  text-transform: none; /* Keeps the first span (Event:) normal */
-}
-
-.eventLayout li .eventDetails {
-    /* font-weight: normal; */
-    /* color: #555; */
-    /* font-size: 1rem; */
-    margin-top: 4px;
-    flex-grow: 1;
-   
-
-    /* flex-direction: column; */
-    justify-content: space-between;
-}
-
 
 iframe {
   display: flex;
@@ -8923,19 +8935,4 @@ width: 50%;
 .message p {
   margin: 5px 0;
   background-color: pink;
-}
-
-button {
-  background-color: pink;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: hotpink;
-}
 }

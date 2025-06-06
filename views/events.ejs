@@ -29,6 +29,66 @@
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+ <style>
+  .calendar-map-container {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  flex-wrap: wrap; /* Helps stack them when screen is narrow */
+}
+
+.map-section,
+.calendar-section {
+  flex: 1 1 45%; /* Flexible basis, takes up to 45% of container */
+  min-width: 300px;
+}
+
+/* Adjust map size */
+#map {
+  width: 350;
+  height: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Calendar navigation */
+.calendar-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+button {
+  padding: 6px 12px;
+  background-color: #fc097c;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background-color: #d50068;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .calendar-map-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .map-section,
+  .calendar-section {
+    width: 100%;
+  }
+}
+
+ </style>
   <style>
   .event-link {
     position: relative;
@@ -63,8 +123,8 @@
 </style>
   <style>
     #map {
-      height: 300px;
-      width: 300px;
+      height: 500px;
+      width: 350px;
       margin-top: 1rem;
     }
     body {
@@ -74,9 +134,9 @@
   </style>
     <style>
     body { font-family: sans-serif; }
-    table { border-collapse: collapse; width: 59%; }
-    td, th { border: 1px solid #ccc; width: 15.2%; height: 80px; text-align: center; vertical-align: top; }
-    .event { background-color: #cce5ff; margin-top: 5px; font-size: 12px; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1px solid #ccc; width: 12%; height: 75px; text-align: center; vertical-align: top; }
+    .event { background-color: #cce5ff; margin-top: 5px; font-size: 13px; }
   </style>
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
     <!-- <link rel="stylesheet" href="assets/css/vendor/plugins.min.css">
@@ -269,26 +329,7 @@
         </div>
 
 
-        <!-- Hero Start -->
-        <div class="section exvent-hero-section d-lg-flex d-block align-items-center inner-page-hero"
-            style="background-image: url(assets/images/newjeans.gif);">
-            <img class="shape-1 img-fluid" src="./astro.gif" alt="">
-            <img class="shape-2 img-fluid" src="./astro.gif" alt="">
-
-            <div class="container">
-                <div class="row exvent-hero-row justify-content-center">
-                    <div class="col-lg-8 text-center">
-                        <div class="page-title">
-                            <h2 class="section-title">Event List</h2>
-                        </div>
-                        <div class="page-navigation">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb justify-content-center">
-                                    <li class="breadcrumb-item"><a href="/">Home</a></li>
-                                    <li class="breadcrumb-item"><a href="/events">Event List</a></li>
-                                </ol>
-                            </nav>
-                        </div>
+     
                     </div>
                 </div>
             </div>
@@ -303,27 +344,7 @@
                 <div class="row">
                   <div class="col-lg-8">
                     <div class="event-list-search">
-                        <form action="events" method="GET">
-                            <div class="row g-0">
-                              <div class="col-md-5">
-                                <div class="single-form">
-                                  <i class="fas fa-search"></i>
-                                  <input type="text" placeholder="Search Event" name="search">
-                                </div>
-                              </div>
-                              <div class="col-md-5">
-                                <div class="single-form form-border">
-                                  <i class="fas fa-map-marker-alt"></i>
-                                  <input type="text" placeholder="Location" name="location">
-                                </div>
-                              </div>
-                              <div class="col-md-2">
-                                <div class="form-btn">
-                                  <button class="event-topbar-btn btn" type="submit">Find Event</button>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
+             
                     </div>
                   </div>
                   <div class="col-lg-4">
@@ -356,30 +377,24 @@
               <!-- Event List Topbar Ends -->
           
               <!-- Event List Bottom Bar Start -->
-              <div class="event-list-bottom-bar">
-                <div class="event-list-btn">
-                  <a class="event-btn" href="/events">
-                    <i class="flaticon-back"></i>
-                  </a>
-                  <a class="event-btn" href="/events">
-                    <i class="flaticon-next"></i>
-                  </a>
-                </div>
-                <div class="date-picker-filter">
-                  <input id="datepicker">
-                </div>
-              </div>
-              <!-- Event List Bottom Bar End -->
+       
           
               <!-- Event List Content Start -->
-           
-                         <h2>📍 K-pop Events Around Boston</h2>
-  <div id="map"></div>
+         <div class="calendar-map-container">
+  <div class="map-section">
+    <h2>📍 K-pop Events Around Boston</h2>
+    <div id="map"></div>
+  </div>
 
+  <div class="calendar-section">
     <h2 id="month-year"></h2>
-    <button onclick="changeMonth(-1)">◀</button>
-    <button onclick="changeMonth(1)">▶</button>
+    <div class="calendar-nav">
+      <button onclick="changeMonth(-1)">◀</button>
+      <button onclick="changeMonth(1)">▶</button>
+    </div>
     <table id="calendar"></table>
+  </div>
+</div>
  
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
