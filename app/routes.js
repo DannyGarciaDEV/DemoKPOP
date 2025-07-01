@@ -1,6 +1,7 @@
 
 const multer = require('multer');
 const { cloudinary } = require('../config/cloudinary.js');
+const cloudinaryProfile = require('../config/cloudinaryProfile.js'); // For profile pics
 const ObjectId = require('mongodb').ObjectID;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -32,6 +33,49 @@ module.exports = function (app, passport, db) {
     });
   });
 
+    app.get('/map', (req, res) => {
+    db.collection('events').find().toArray((err, result) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send('Error fetching events');
+      }
+      res.render('map.ejs', { events: result, user: req.user });
+    });
+  });
+
+app.post('/profile/edit', isLoggedIn, upload.single('profilePicture'), async (req, res) => {
+  try {
+    const updates = {
+      'local.nameUser': req.body.nameUser
+    };
+
+    // Upload profile picture if provided
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        cloudinaryProfile.uploader.upload_stream(
+          { resource_type: 'image', folder: 'profile_pics' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        ).end(req.file.buffer);
+      });
+
+      updates['local.profilePicture'] = result.secure_url;
+    }
+
+    // Update user in MongoDB
+    await db.collection('users').updateOne(
+      { _id: req.user._id },
+      { $set: updates }
+    );
+
+    res.redirect('/profile');
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).send('Profile update failed.');
+  }
+});
   // PROFILE SECTION ===========================================================
   app.get('/profile', isLoggedIn, async (req, res) => {
     try {
@@ -224,10 +268,12 @@ module.exports = function (app, passport, db) {
       eventId: eventId,
       user: req.user.local.email,
       userId: req.user._id,
+      nameUser: req.user.local.nameUser
     },
     {"$set": {
       eventId: eventId,
       user: req.user.local.email,
+      nameUser: req.user.local.nameUser,
       userId: req.user._id,
       createdAt: new Date().toISOString(),
     }},
@@ -256,6 +302,7 @@ module.exports = function (app, passport, db) {
       content: req.body.content,
       // TODO update to have name / username
       createdBy: req.user.local.email,
+      nameUser: req.user.local.nameUser,
       createdAt: new Date().toISOString(),
       eventId: eventId,
     }, (err, newMessage) => {
@@ -281,7 +328,7 @@ const validateEvent = [
       return res.status(400).json({ errors: errors.array() });
     }
   
-const { summary, location, city, description, startDate, endDate, imageUrl } = req.body;
+let { summary, location, city, description, startDate, endDate, imageUrl } = req.body;
    
   
     try {
@@ -323,6 +370,8 @@ const { summary, location, city, description, startDate, endDate, imageUrl } = r
         
         createdBy: req.user._id,
         user: req.user.local.email,
+        nameUser: req.user.local.nameUser
+
       };
   
       
@@ -383,6 +432,7 @@ const { summary, location, city, description, startDate, endDate, imageUrl } = r
       const result = await db.collection('messages').deleteOne({
         _id: new ObjectId(id),
         createdBy: req.user.local.email, // Only the message author can delete
+        nameUser: req.user.local.nameUser
       });
   
       if (result.deletedCount === 0) {
@@ -561,6 +611,7 @@ app.delete('/event/:eventId/attend', isLoggedIn, async (req, res) => {
     var user = req.user;
     user.local.email = undefined;
     user.local.password = undefined;
+    user.local.nameUser = undefined;
     user.save((err) => {
       res.redirect('/');
     });

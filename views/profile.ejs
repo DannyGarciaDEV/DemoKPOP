@@ -29,7 +29,20 @@
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
  
-
+  <style>
+    .profile-container {
+      width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+  
+    input[type="text"], input[type="file"] {
+      display: block;
+      margin: 10px auto;
+      padding: 5px;
+      width: 80%;
+    }
+  </style>
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
     <!-- <link rel="stylesheet" href="assets/css/vendor/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css"> -->
@@ -75,7 +88,7 @@
                             
                         
                            
-                           
+                             <li><a href="/map"> Map and Calendar</a></li>
 
                             <li><a href="/profile"> Profile</a></li>
                             <li class="active-menu"><a href="/logout">Logout</a></li>
@@ -208,7 +221,7 @@
                        
                             
                        
-                      
+                        <li><a href="/map"> Map and Calendar</a></li>
                       
                         <li class="active-menu"><a href="/profile">Profile</a></li>
                      
@@ -245,9 +258,28 @@
                               <div>
                           
                               </div>
-                      
-                              <h1>Profile: <%= user.local.email %></h1>
-                      
+
+
+
+  <!-- Info -->
+  
+   <!-- Profile Content -->
+<div class="container" style="margin-top: 150px; margin-bottom: 80px;">
+  <div class="profile-container">
+    <h2>Welcome, <%= user.local.nameUser %>!</h2>
+    <p>Email: <%= user.local.email %></p>
+
+    <button id="toggleEditBtn" class="btn btn-primary mt-2" type="button">Edit Username</button>
+
+    <div id="editForm" class="profile-form" style="display: none; margin-top: 20px;">
+      <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+        <label for="nameUser">Change Name:</label>
+        <input type="text" id="nameUser" name="nameUser" value="<%= user.local.nameUser || '' %>" required>
+        <button class="btn btn-primary mt-2" type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
                               <section>
                                 <h3>Events You Are Attending</h3>
                                 <% if (eventsAttending?.length > 0) { %>
@@ -364,5 +396,18 @@
    
 
 </body>
+<script>
+  const toggleBtn = document.getElementById('toggleEditBtn');
+  const editForm = document.getElementById('editForm');
 
+  toggleBtn.addEventListener('click', () => {
+    if (editForm.style.display === 'none' || editForm.style.display === '') {
+      editForm.style.display = 'block';
+      toggleBtn.textContent = 'Cancel';
+    } else {
+      editForm.style.display = 'none';
+      toggleBtn.textContent = 'Edit Username';
+    }
+  });
+</script>
 </html>
