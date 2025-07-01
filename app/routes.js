@@ -618,6 +618,10 @@ app.delete('/event/:eventId/attend', isLoggedIn, async (req, res) => {
     });
   });
 
+  // Catch all unmatched routes -> 404 page
+  app.use((req, res) => {
+    res.status(404).render('404.ejs', { user: req.user });
+  });
 };
 
 // Route Middleware to Ensure User is Logged In ================================
