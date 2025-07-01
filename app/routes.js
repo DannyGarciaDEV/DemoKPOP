@@ -11,15 +11,22 @@ module.exports = function (app, passport, db) {
 
   // Normal Routes ===============================================================
 
-  app.get('/', (req, res) => {
-    db.collection('events').find().toArray((err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send('Error fetching events');
-      }
-      res.render('index.ejs', { events: result, user: req.user });
-    });
+// Home page (or other existing routes)
+app.get('/', (req, res) => {
+  db.collection('events').find().toArray((err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error fetching events');
+    }
+    res.render('index.ejs', { events: result, user: req.user }); // your normal homepage
   });
+});
+
+// Any other non-existing route goes here:
+app.use((req, res) => {
+  res.status(404).render('404.ejs', { user: req.user }); 
+});
+
 
 
 
