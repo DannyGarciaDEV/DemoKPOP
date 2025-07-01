@@ -22,12 +22,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Any other non-existing route goes here:
-app.use((req, res) => {
-  res.status(404).render('404.ejs', { user: req.user }); 
-});
-
-
 
 
   app.get('/calendar', (req, res) => {
@@ -631,3 +625,9 @@ function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/');
 }
+// Any other non-existing route goes here:
+app.use((req, res) => {
+  res.status(404).render('404.ejs', { user: req.user }); 
+});
+
+
