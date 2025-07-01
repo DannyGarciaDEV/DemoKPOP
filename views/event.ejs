@@ -69,7 +69,8 @@
                 <li><a href="/map"> Map and Calendar</a></li>
               <li><a href="/profile"> Profile</a></li>
 
-
+   <li class="active-menu"><a href="/logout">Logout</a></li>
+                     
             </ul>
           </div>
 
@@ -119,9 +120,10 @@
           </li>
           <li><a href="/profile">Profile</a>
               <li><a href="/map"> Map and Calendar</a></li>
-          <li><a href="/createEvent">Creat Event</a>
+          <li><a href="/createEvent">Create Event</a>
           </li>
-
+   <li class="active-menu"><a href="/logout">Logout</a></li>
+                     
         </ul>
 
       </div>
@@ -176,12 +178,12 @@
       <i class="far fa-clock me-2 text-danger"></i>
       <span>Ends: <%= new Date(event.end.dateTime).toLocaleTimeString('en-US') %></span>
     </div>
-<div class="d-flex justify-content-between align-items-start mt-4">
+<!-- <div class="d-flex justify-content-between align-items-start mt-4">
   <% if (event.createdBy) { %>
     <button class="btn btn-danger delete-event-btn" data-id="<%= event._id %>" title="Delete Event">
       <i class="fas fa-trash-alt me-1"></i> Delete Event
     </button>
-  <% } %>
+  <% } %> -->
 
   <section class="text-end">
     <% if (attendees?.length > 0) { %>
@@ -192,8 +194,8 @@
     <% } else { %>
       <p class="text-muted">No one is attending this event yet.</p>
     <% } %>
-
-    <button class="btn btn-primary" id="attend-button">
+<br>
+    <button class="btn " id="attend-button">
       <%= isAttending ? "Attending (Click to Leave)" : "Not Attending (Click to Join)" %>
     </button>
   </section>
