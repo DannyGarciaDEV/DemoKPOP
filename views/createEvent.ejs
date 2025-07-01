@@ -142,19 +142,6 @@
       <input type="text" id="location" name="location" class="form-control" required>
     </div>
 
-    <div class="form-group mb-3">
-      <label for="city">City:</label>
-      <select id="city" name="city" class="form-control" required>
-        <option value="" disabled selected>Select a city</option>
-        <option value="Boston">Boston</option>
-        <option value="Worcester">Worcester</option>
-        <option value="Somerville">Somerville</option>
-        <option value="Allston">Allston</option>
-        <option value="Brighton">Brighton</option>
-        <option value="Cambridge">Cambridge</option>
-        <option value="Roxbury">Roxbury</option>
-      </select>
-    </div>
 
     <div class="form-group mb-4">
       <label for="rsvpLink">RSVP Link (optional):</label>
@@ -199,7 +186,7 @@
   location: document.getElementById('location').value,
   imageUrl: document.getElementById('uploadedImageUrl').value,
   description: document.getElementById('description').value,
-  city: document.getElementById('city').value,
+
   rsvpLink: document.getElementById('rsvpLink').value 
 };
             
