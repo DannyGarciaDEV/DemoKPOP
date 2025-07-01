@@ -626,8 +626,4 @@ function isLoggedIn(req, res, next) {
   res.redirect('/');
 }
 // Any other non-existing route goes here:
-app.use((req, res) => {
-  res.status(404).render('404.ejs', { user: req.user }); 
-});
-
 
